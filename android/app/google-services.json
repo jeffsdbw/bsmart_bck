@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "601697725144",
+    "firebase_url": "https://bsmart-22c4d.firebaseio.com",
+    "project_id": "bsmart-22c4d",
+    "storage_bucket": "bsmart-22c4d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601697725144:android:c1702de514b90c12",
+        "android_client_info": {
+          "package_name": "th.co.mistine.bsmart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "601697725144-pl2dhm9fc6c1jdv97ip1fkop7usbgacd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "th.co.mistine.bsmart",
+            "certificate_hash": "3614b502fe79510dba8392987dbb22efd286ec93"
+          }
+        },
+        {
+          "client_id": "601697725144-g2u8mpad3t2j2i74hg2icp1l0mhrn1sc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPIUl6v9gVZtUAlDfPByv7pFZJS66i9SI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "601697725144-g2u8mpad3t2j2i74hg2icp1l0mhrn1sc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "601697725144-eqhf8rudn532bte2r90lbhip05j4hdi4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.co.mistine.fmr"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601697725144:android:ad647faa63144f50",
+        "android_client_info": {
+          "package_name": "th.co.mistine.fmr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "601697725144-ag33ociu94e2ohs398scmu76clejvpdf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "th.co.mistine.fmr",
+            "certificate_hash": "3614b502fe79510dba8392987dbb22efd286ec93"
+          }
+        },
+        {
+          "client_id": "601697725144-g2u8mpad3t2j2i74hg2icp1l0mhrn1sc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPIUl6v9gVZtUAlDfPByv7pFZJS66i9SI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "601697725144-g2u8mpad3t2j2i74hg2icp1l0mhrn1sc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "601697725144-eqhf8rudn532bte2r90lbhip05j4hdi4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "th.co.mistine.fmr"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
