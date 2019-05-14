@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui' as ui;
-import 'package:bsmart/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info/device_info.dart';
 
+import 'main_screen.dart';
+
+// ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
   String params;
   LoginScreen(this.params);
@@ -54,7 +56,7 @@ Widget _buildAvatar() {
     margin: const EdgeInsets.only(top: 75.0),
     padding: const EdgeInsets.all(3.0),
     child: ClipOval(
-       //child: Image.asset(artist.avatar),
+      //child: Image.asset(artist.avatar),
       child: Image(
         image: AssetImage('assets/images/logo_bsmart_02.png'),
         width: 100.0,
@@ -70,23 +72,23 @@ Widget _buildInfo(BuildContext context, String status, String line1,
   TextEditingController ctrPassword = TextEditingController();
 
   Future<Null> doLogin() async {
-
     String os = Platform.operatingSystem;
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     String model;
-    if(os=='android'){
+    if (os == 'android') {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       model = androidInfo.model;
-      print('Running on ${androidInfo.model}');  // e.g. "Moto G (4)"
+      print('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
     } else {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       model = iosInfo.utsname.machine;
-      print('Running on ${iosInfo.utsname.machine}');  // e.g. "iPod7,1"
+      print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
     }
 
-    print('URL SERVICE:'+server +
+    print('URL SERVICE:' +
+        server +
         'checkLogin.php?user=' +
         ctrUsername.text +
         '&password=' +
@@ -113,10 +115,10 @@ Widget _buildInfo(BuildContext context, String status, String line1,
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);
-      String status = map ['results']['status'];
+      String status = map['results']['status'];
       if (status == '0') {
         String userID = ctrUsername.text;
-        String userName = map ['results']['name'];
+        String userName = map['results']['name'];
 
         final prefs = await SharedPreferences.getInstance();
         prefs.setString('userID', userID);
@@ -126,9 +128,9 @@ Widget _buildInfo(BuildContext context, String status, String line1,
         prefs.setString('os', os);
         prefs.setString('model', model);
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+            context, MaterialPageRoute(builder: (context) => MainScreen()));
       } else {
-        String vMsg = map ['results']['message'];
+        String vMsg = map['results']['message'];
         showDialog<Null>(
             context: context,
             builder: (BuildContext context) {

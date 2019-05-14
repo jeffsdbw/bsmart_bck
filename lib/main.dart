@@ -1,9 +1,9 @@
-import 'dart:io' show Platform;  //at the top
+import 'dart:io' show Platform; //at the top
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-//import 'package:fmr/screens/home_screen.dart';
+import 'package:bsmart/screens/main_screen.dart';
 import 'package:bsmart/screens/login_screen.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,13 +13,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   bool chkToken = false;
   String textValue = 'Hello World!';
   FirebaseMessaging firebaseMessaging = FirebaseMessaging();
+  String userID = 'No User';
+  bool chkUser = false;
+
+  Future<Null> getPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String userID = (prefs.getString('userID') ?? 'No User');
+    if (userID != 'No User') {
+      chkUser = true;
+    }
+  }
 
   @override
+  // ignore: must_call_super
   void initState() {
+    getPref();
     firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
       print('onLaunch called');
     }, onResume: (Map<String, dynamic> msg) {
@@ -32,15 +43,14 @@ class _MyAppState extends State<MyApp> {
     firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings setting) {
       print('IOS Setting Registed $setting');
-    }
-    );
+    });
     firebaseMessaging.getToken().then((token) {
       update(token);
     });
   }
 
   void update(String token) {
-    print('Token :'+token);
+    print('Token :' + token);
     textValue = token;
     //final prefs = await SharedPreferences.getInstance();
     //prefs.setString('token', token);
@@ -53,7 +63,7 @@ class _MyAppState extends State<MyApp> {
     String os = Platform.operatingSystem; //in your code
     bool chkAndroid;
 
-    if(os=='android'){
+    if (os == 'android') {
       chkAndroid = true;
     } else {
       chkAndroid = false;
@@ -75,14 +85,24 @@ class _MyAppState extends State<MyApp> {
           child: Scaffold(
             body: Center(child: Text('MainToken:' + textValue)),
           )),*/
-      home: chkAndroid?
+      /*home: chkAndroid?  //--> Back up
       chkToken
           ? LoginScreen(textValue)
           : Center(
           child: Scaffold(
             body: Center(child: Text('MainToken:' + textValue)),
           ))
-          : LoginScreen(textValue),
+          : LoginScreen(textValue),*/
+      home: chkUser
+          ? MainScreen()
+          : chkAndroid
+              ? chkToken
+                  ? LoginScreen(textValue)
+                  : Center(
+                      child: Scaffold(
+                      body: Center(child: Text('MainToken:' + textValue)),
+                    ))
+              : LoginScreen(textValue),
       /*home: Center(
           child: Scaffold(
         body: Center(child: Text('OS:'+os+'\n'+'Token:' + textValue)),
@@ -99,7 +119,6 @@ class _MyAppState extends State<MyApp> {
       //routes: <String, WidgetBuilder>{
       //  '/home': (BuildContext context) => HomeScreen(),
       //},
-
     );
   }
 }
