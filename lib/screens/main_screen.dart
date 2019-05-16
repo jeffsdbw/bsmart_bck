@@ -57,6 +57,187 @@ class _MainScreenState extends State<MainScreen> {
     ],
   );
 
+  Widget drawer = Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: <Widget>[
+        UserAccountsDrawerHeader(
+          currentAccountPicture: CircleAvatar(
+            backgroundColor: Colors.white,
+            backgroundImage: AssetImage('assets/images/logo_bsmart_02.jpg'),
+            // backgroundImage: NetworkImage(
+            //     'https://randomuser.me/api/portraits/med/men/11.jpg'),
+            /* backgroundColor: Colors.white70,
+              child: Text(
+                'SK',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 45.0,
+                    color: Colors.white),
+              ),*/
+          ),
+          accountName: Text(
+            'User ID',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          accountEmail: Text(
+            'User Name',
+            style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+          ),
+          decoration: BoxDecoration(
+            color: Colors.pink[400],
+            image: DecorationImage(
+              image: ExactAssetImage('assets/images/wdhead2.jpg'),
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        /*DrawerHeader(
+            child: Text(
+              'Drawer Header',
+              style: TextStyle(fontSize: 30),
+            ),
+            decoration: BoxDecoration(
+              color: Colors.pink[400],
+            ),
+          ),*/
+        ListTile(
+          leading: Icon(
+            Icons.people,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Customer List',
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            'Customer Detail',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.store,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Customer Stock',
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            'Customer Stock Checking',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.monetization_on,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Customer Credit Note',
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            'Credit Note Document',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(
+            Icons.view_list,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Product List',
+            style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.w600),
+          ),
+          subtitle: Text(
+            'Product Detail',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+        ListTile(
+          leading: Icon(
+            Icons.local_shipping,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Product Stock',
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            'Product Stock Detail',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(
+            Icons.account_circle,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Profile',
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            'Your profile',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+        Divider(),
+        ListTile(
+          leading: Icon(
+            Icons.exit_to_app,
+            color: Colors.pinkAccent,
+          ),
+          title: Text(
+            'Logout',
+            style: TextStyle(
+              fontSize: 25.0,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          subtitle: Text(
+            'Logout your account',
+            style: TextStyle(fontSize: 20.0),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_right),
+          onTap: () {},
+        ),
+      ],
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,6 +284,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
       ),
+      drawer: drawer,
     );
   }
 }

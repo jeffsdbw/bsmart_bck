@@ -116,9 +116,9 @@ class _MyAppState extends State<MyApp> {
             body: Text('MainToken:' + textValue),
           )),
       */
-      //routes: <String, WidgetBuilder>{
-      //  '/home': (BuildContext context) => HomeScreen(),
-      //},
+      /*routes: <String, WidgetBuilder>{
+        '/home': (BuildContext context) => HomeScreen(),
+      },*/
     );
   }
 }
