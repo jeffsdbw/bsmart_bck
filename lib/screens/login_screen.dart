@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
+import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info/device_info.dart';
 
@@ -46,15 +47,15 @@ Widget _buildListItem(
 
 Widget _buildAvatar() {
   return Container(
-    width: 175.0,
-    height: 175.0,
+    width: 155.0,
+    height: 155.0,
     decoration: BoxDecoration(
       shape: BoxShape.circle,
       border: Border.all(color: Colors.white30),
       color: Colors.white,
     ),
     margin: const EdgeInsets.only(top: 75.0),
-    padding: const EdgeInsets.all(3.0),
+    padding: const EdgeInsets.all(5.0),
     child: ClipOval(
       //child: Image.asset(artist.avatar),
       child: Image(
@@ -87,6 +88,10 @@ Widget _buildInfo(BuildContext context, String status, String line1,
       print('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
     }
 
+    String versionCode;
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    versionCode = packageInfo.buildNumber;
+
     print('URL SERVICE:' +
         server +
         'checkLogin.php?user=' +
@@ -99,7 +104,9 @@ Widget _buildInfo(BuildContext context, String status, String line1,
         '&os=' +
         os +
         '&model=' +
-        model);
+        model +
+        '&version=' +
+        versionCode);
     final response = await http.post(server +
         'checkLogin.php?user=' +
         ctrUsername.text +
@@ -111,7 +118,9 @@ Widget _buildInfo(BuildContext context, String status, String line1,
         '&os=' +
         os +
         '&model=' +
-        model);
+        model +
+        '&version=' +
+        versionCode);
 
     if (response.statusCode == 200) {
       Map<String, dynamic> map = jsonDecode(response.body);

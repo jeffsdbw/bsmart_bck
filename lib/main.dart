@@ -1,10 +1,13 @@
-import 'dart:io' show Platform; //at the top
+import 'dart:io' show Platform, exit; //at the top
+import 'package:bsmart/screens/fmr_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:bsmart/screens/main_screen.dart';
 import 'package:bsmart/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -19,18 +22,38 @@ class _MyAppState extends State<MyApp> {
   FirebaseMessaging firebaseMessaging = FirebaseMessaging();
   String userID = 'No User';
   bool chkUser = false;
+  String versionName, versionCode;
 
   Future<Null> getPref() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userID = (prefs.getString('userID') ?? 'No User');
+    String token = (prefs.getString('token') ?? 'No Token');
+    String server = (prefs.getString('server') ?? 'No Server');
     if (userID != 'No User') {
       chkUser = true;
+
+      final response = await http.post(server +
+          'updateInfo.php?user=' +
+          userID +
+          '&appid=BSMART' +
+          '&token=' +
+          token +
+          '&version=' +
+          versionCode);
     }
+  }
+
+  Future<Null> checkForceUpdate() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    versionName = packageInfo.version;
+    versionCode = packageInfo.buildNumber;
+    print('Check Version:' + versionCode + ':');
   }
 
   @override
   // ignore: must_call_super
   void initState() {
+    checkForceUpdate();
     getPref();
     firebaseMessaging.configure(onLaunch: (Map<String, dynamic> msg) {
       print('onLaunch called');
@@ -83,7 +106,7 @@ class _MyAppState extends State<MyApp> {
                 color: Colors.white,
                 child: Text(
                   'Loading...',
-                  textDirection: TextDirection.rtl,
+                  textDirection: TextDirection.ltr,
                   style: TextStyle(fontSize: 25.0, color: Colors.black),
                 ),
               ),
@@ -94,8 +117,16 @@ class _MyAppState extends State<MyApp> {
           bool chkClose = false;
           if (userDocument["status"] == '0') {
             chkClose = true;
+            print('Check Status : Close!');
+          } else {
+            print('Check Status : Open!');
           }
-          String mainPath = userDocument["mainpath"];
+          bool chkVersion = false;
+          if (userDocument["force_update"] == '1' &&
+              int.parse(versionCode) < int.parse(userDocument["version"])) {
+            chkVersion = true;
+          }
+
           /*
           return Center(
             child: Text(
@@ -113,6 +144,80 @@ class _MyAppState extends State<MyApp> {
               //cursorColor: Colors.white,
             ),
             title: 'BSMART ',
+            home: chkVersion
+                ? Center(
+                    child: Scaffold(
+                    backgroundColor: Colors.white,
+                    body: Center(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage('assets/images/warning.png'),
+                          height: 150.0,
+                          width: 150.0,
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        Text(
+                          'Your Application version : ' + versionCode,
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text(
+                          'Please Update to Version : ' +
+                              userDocument["version"],
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.red),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        ButtonTheme(
+                          minWidth: 200.0,
+                          child: RaisedButton(
+                            child: Text(
+                              'OK',
+                              style: TextStyle(
+                                  fontSize: 20.0, color: Colors.white),
+                            ),
+                            color: Colors.pinkAccent,
+                            elevation: 4.0,
+                            splashColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide.none,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            onPressed: () {
+                              exit(0);
+                            },
+                          ),
+                        )
+                      ],
+                    )),
+                  ))
+                : chkClose
+                    ? LoginScreen(textValue)
+                    : chkUser
+                        ? MainScreen()
+                        : chkAndroid
+                            ? chkToken
+                                ? LoginScreen(textValue)
+                                : Center(
+                                    child: Scaffold(
+                                    body: Center(
+                                        child: Text('MainToken:' + textValue)),
+                                  ))
+                            : LoginScreen(textValue),
+            routes: <String, WidgetBuilder>{
+              '/fmr': (BuildContext context) => FmrScreen(),
+            },
+          );
+          /*
             home: chkClose
                 ? LoginScreen(textValue)
                 : chkUser
@@ -127,6 +232,7 @@ class _MyAppState extends State<MyApp> {
                               ))
                         : LoginScreen(textValue),
           );
+          */
         });
 
     /*
