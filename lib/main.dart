@@ -1,4 +1,5 @@
 import 'dart:io' show Platform; //at the top
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:bsmart/screens/main_screen.dart';
@@ -69,6 +70,66 @@ class _MyAppState extends State<MyApp> {
       chkAndroid = false;
     }
 
+    return new StreamBuilder(
+        stream: Firestore.instance
+            .collection('config')
+            .document('main')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            //return new Text("Loading");
+            return Center(
+              child: Container(
+                color: Colors.white,
+                child: Text(
+                  'Loading...',
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(fontSize: 25.0, color: Colors.black),
+                ),
+              ),
+            );
+          }
+          var userDocument = snapshot.data;
+          //return new Text(userDocument["line1"]);
+          bool chkClose = false;
+          if (userDocument["status"] == '0') {
+            chkClose = true;
+          }
+          String mainPath = userDocument["mainpath"];
+          /*
+          return Center(
+            child: Text(
+              userDocument["line1"],
+              textDirection: TextDirection.rtl,
+            ),
+          );*/
+
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              scaffoldBackgroundColor: Colors.white70,
+              primaryColor: Colors.pink,
+              accentColor: Colors.amber,
+              //cursorColor: Colors.white,
+            ),
+            title: 'BSMART ',
+            home: chkClose
+                ? LoginScreen(textValue)
+                : chkUser
+                    ? MainScreen()
+                    : chkAndroid
+                        ? chkToken
+                            ? LoginScreen(textValue)
+                            : Center(
+                                child: Scaffold(
+                                body: Center(
+                                    child: Text('MainToken:' + textValue)),
+                              ))
+                        : LoginScreen(textValue),
+          );
+        });
+
+    /*
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -78,21 +139,6 @@ class _MyAppState extends State<MyApp> {
         //cursorColor: Colors.white,
       ),
       title: 'Approval ',
-      /*home:
-      chkToken
-          ? LoginScreen(textValue)
-          : Center(
-          child: Scaffold(
-            body: Center(child: Text('MainToken:' + textValue)),
-          )),*/
-      /*home: chkAndroid?  //--> Back up
-      chkToken
-          ? LoginScreen(textValue)
-          : Center(
-          child: Scaffold(
-            body: Center(child: Text('MainToken:' + textValue)),
-          ))
-          : LoginScreen(textValue),*/
       home: chkUser
           ? MainScreen()
           : chkAndroid
@@ -103,22 +149,7 @@ class _MyAppState extends State<MyApp> {
                       body: Center(child: Text('MainToken:' + textValue)),
                     ))
               : LoginScreen(textValue),
-      /*home: Center(
-          child: Scaffold(
-        body: Center(child: Text('OS:'+os+'\n'+'Token:' + textValue)),
-      )),*/
-      //home: LoginScreen(textValue),
-      //home: HomeScreen(),
-      /*home: chkToken
-          ? LoginScreen(textValue)
-          : Center(
-          child: Scaffold(
-            body: Text('MainToken:' + textValue),
-          )),
-      */
-      /*routes: <String, WidgetBuilder>{
-        '/home': (BuildContext context) => HomeScreen(),
-      },*/
     );
+    */
   }
 }
