@@ -6,6 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'epr_screen.dart';
+import 'fmr_screen.dart';
+
 class MainScreen extends StatefulWidget {
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -15,6 +18,9 @@ class _MainScreenState extends State<MainScreen> {
   var modules;
   bool isLoading = true;
   String userID, userName, versionName, versionCode;
+
+  int currentIndex = 0;
+  List pages = [FmrScreen(), EprScreen()];
 
   Future<Null> getModules() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,9 +34,11 @@ class _MainScreenState extends State<MainScreen> {
       var jsonResponse = json.decode(response.body);
       print(jsonResponse);
       isLoading = false;
-      setState(() {
+      /*setState(() {
         modules = jsonResponse['results'];
-      });
+      });*/
+      modules = jsonResponse['results'];
+      setState(() {});
     } else {
       print('Connection Error!');
     }
@@ -78,40 +86,30 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     Widget drawer = Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          UserAccountsDrawerHeader(
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Colors.white,
-              backgroundImage: AssetImage('assets/images/logo_bsmart_02.jpg'),
-            ),
-            accountName: Text(
-              dID,
-              style: TextStyle(fontSize: 20.0),
-            ),
-            accountEmail: Text(
-              dName,
-              style: TextStyle(fontSize: 20.0),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.pink[400],
-              image: DecorationImage(
-                image: ExactAssetImage('assets/images/wdhead2.jpg'),
-                fit: BoxFit.cover,
-              ),
+        child: Column(
+      children: <Widget>[
+        UserAccountsDrawerHeader(
+          currentAccountPicture: CircleAvatar(
+            backgroundColor: Colors.white,
+            backgroundImage: AssetImage('assets/images/logo_bsmart_02.jpg'),
+          ),
+          accountName: Text(
+            dID,
+            style: TextStyle(fontSize: 20.0),
+          ),
+          accountEmail: Text(
+            dName,
+            style: TextStyle(fontSize: 20.0),
+          ),
+          decoration: BoxDecoration(
+            color: Colors.pink[400],
+            image: DecorationImage(
+              image: ExactAssetImage('assets/images/wdhead2.jpg'),
+              fit: BoxFit.cover,
             ),
           ),
-          /*DrawerHeader(
-            child: Text(
-              'Drawer Header',
-              style: TextStyle(fontSize: 30),
-            ),
-            decoration: BoxDecoration(
-              color: Colors.pink[400],
-            ),
-          ),*/
-          ListTile(
+        ),
+        ListTile(
             leading: Icon(
               Icons.home,
               size: 35.0,
@@ -128,55 +126,121 @@ class _MainScreenState extends State<MainScreen> {
               style: TextStyle(fontSize: 15.0),
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(
-              Icons.account_circle,
-              size: 35.0,
-            ),
-            title: Text(
-              'Profile',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            subtitle: Text(
-              'Your profile',
-              style: TextStyle(fontSize: 15.0),
-            ),
-            trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(
-              Icons.exit_to_app,
-              size: 35.0,
-            ),
-            title: Text(
-              'Logout',
-              style: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            subtitle: Text(
-              'Logout your account',
-              style: TextStyle(fontSize: 15.0),
-            ),
-            trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {},
-          ),
-        ],
-      ),
-    );
+            onTap: () {}),
+        Expanded(
+          flex: 2,
+          child: ListView.builder(
+              //itemCount: modules.length == null ? 2 : modules.length + 2,
+              itemCount: modules != null ? modules.length + 2 : 2,
+              padding: EdgeInsets.only(top: 0.0),
+              itemBuilder: (context, position) {
+                String chk =
+                    position.toString() + ':' + modules.length.toString();
+                if (position < modules.length) {
+                  return Column(
+                    children: <Widget>[
+                      Divider(),
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          radius: 20.0,
+                          child: Text(
+                            modules[position]['short'],
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13.0,
+                                color: Colors.white),
+                          ),
+                        ),
+                        title: Text(modules[position]['name'],
+                            style: TextStyle(fontSize: 20.0)),
+                        subtitle: Text(modules[position]['info'],
+                            style: TextStyle(fontSize: 15.0)),
+                        onTap: () {
+                          Navigator.pushNamed(
+                              context, modules[position]['path']);
+                        },
+                      ),
+                    ],
+                  );
+                } else if (position == modules.length) {
+                  return Column(
+                    children: <Widget>[
+                      Divider(),
+                      ListTile(
+                        leading: Icon(
+                          Icons.account_circle,
+                          size: 35.0,
+                        ),
+                        title: Text(
+                          'Profile',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Your profile',
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                        trailing: Icon(Icons.keyboard_arrow_right),
+                        onTap: () {},
+                      ),
+                    ],
+                  );
+                } else {
+                  return Column(
+                    children: <Widget>[
+                      Divider(),
+                      ListTile(
+                        leading: Icon(
+                          Icons.exit_to_app,
+                          size: 35.0,
+                        ),
+                        title: Text(
+                          'Logout',
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        subtitle: Text(
+                          'Logout your account',
+                          style: TextStyle(fontSize: 15.0),
+                        ),
+                        trailing: Icon(Icons.keyboard_arrow_right),
+                        onTap: () {},
+                      ),
+                    ],
+                  );
+                }
+              }),
+        ),
+      ],
+    ));
+
+    Widget bottomNavBar = BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (int index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.store),
+              title: Text(
+                'FMR',
+                style: TextStyle(fontSize: 15.0),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.view_list),
+              title: Text('EPR', style: TextStyle(fontSize: 15.0))),
+        ]);
 
     return Scaffold(
       appBar: appBar,
-      body: RefreshIndicator(
+      /*body: RefreshIndicator(
         onRefresh: getModules,
         child: isLoading
             ? Center(child: CircularProgressIndicator())
@@ -219,8 +283,12 @@ class _MainScreenState extends State<MainScreen> {
                   itemCount: modules != null ? modules.length : 0,
                 ),
               ),
+      ),*/
+      body: Center(
+        child: Text('This is Main Screen!'),
       ),
       drawer: drawer,
+      bottomNavigationBar: bottomNavBar,
     );
   }
 }
