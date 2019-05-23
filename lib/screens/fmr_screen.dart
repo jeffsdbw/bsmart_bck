@@ -238,101 +238,196 @@ class _FmrScreenState extends State<FmrScreen> {
             : ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemBuilder: (context, int index) {
+                  bool chkWh = true;
+                  if (doc[index]['wh'].isEmpty ||
+                      doc[index]['wh'] == null ||
+                      doc[index]['wh'] == '') {
+                    chkWh = false;
+                  }
+                  double fontSize = 13.0;
+                  int chkLength = doc[index]['dept'].length;
+                  if (chkLength == 2) {
+                    fontSize = 20.0;
+                  } else if (chkLength == 3) {
+                    fontSize = 15.0;
+                  } else if (chkLength == 4) {
+                    fontSize = 14.0;
+                  }
+
                   return Card(
-                    //color: Colors.blue,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        //color: Colors.pink[100],
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  doc[index]['status'],
-                                  style: TextStyle(
-                                      color: Colors.pinkAccent,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(
-                                  height: 8.0,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Dept. : ',
-                                    ),
-                                    Text(
-                                      doc[index]['dept'],
-                                      style: TextStyle(
-                                          color: Colors.pink,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                    elevation: 8.0,
+                    margin: EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
+                    child: ListTile(
+                      leading: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.pink,
+                              radius: 20.0,
+                              child: Text(
+                                doc[index]['dept'],
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: fontSize,
+                                    color: Colors.white),
+                              ),
                             ),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  doc[index]['no'],
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(
-                                  height: 8.0,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Charge : ',
-                                    ),
-                                    Text(
-                                      doc[index]['charge'],
-                                      style: TextStyle(
-                                          color: Colors.pink,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text(
-                                  doc[index]['date'],
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(
-                                  height: 8.0,
-                                ),
-                                Container(
-                                  width: 80.0,
-                                  //color: Colors.green,
-                                  alignment: Alignment(1.0, 0.0),
-                                  child: Text(
-                                    doc[index]['amount'],
-                                    style: TextStyle(
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
+                      title: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 3,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      doc[index]['no'],
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 4.0,
+                                    ),
+                                    Text('Charge : ' + doc[index]['charge'],
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                        )),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      doc[index]['date'],
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 4.0,
+                                    ),
+                                    Container(
+                                      //color: Colors.purple,
+                                      width: 80.0,
+                                      alignment: Alignment(1.0, 0.0),
+                                      child: Text(doc[index]['amount'],
+                                          style: TextStyle(
+                                            fontSize: 15.0,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      doc[index]['status'],
+                                      style: TextStyle(
+                                          color: Colors.pink,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15.0),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      /*
+                      trailing: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            doc[index]['status'],
+                            style: TextStyle(
+                                color: Colors.pink,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15.0),
+                          )
+                        ],
+                      ),
+                      */
                     ),
                   );
+                  /*
+                  return Card(
+                    margin: EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
+                    elevation: 8.0,
+//                    shape: RoundedRectangleBorder(
+//                        side: BorderSide.none,
+//                        borderRadius: BorderRadius.circular(10.0)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          color: Colors.pink,
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    doc[index]['dept'],
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15.0),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  doc[index]['status'],
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15.0),
+                                ),
+                              )),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );*/
                 },
                 itemCount: doc != null ? doc.length : 0,
               ),
