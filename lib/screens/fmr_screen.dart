@@ -238,12 +238,6 @@ class _FmrScreenState extends State<FmrScreen> {
             : ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 itemBuilder: (context, int index) {
-                  bool chkWh = true;
-                  if (doc[index]['wh'].isEmpty ||
-                      doc[index]['wh'] == null ||
-                      doc[index]['wh'] == '') {
-                    chkWh = false;
-                  }
                   double fontSize = 13.0;
                   int chkLength = doc[index]['dept'].length;
                   if (chkLength == 2) {
@@ -291,7 +285,7 @@ class _FmrScreenState extends State<FmrScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Expanded(
-                                flex: 3,
+                                //flex: 3,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment:
@@ -315,7 +309,7 @@ class _FmrScreenState extends State<FmrScreen> {
                                 ),
                               ),
                               Expanded(
-                                flex: 3,
+                                //flex: 3,
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment:
@@ -338,11 +332,14 @@ class _FmrScreenState extends State<FmrScreen> {
                                       child: Text(doc[index]['amount'],
                                           style: TextStyle(
                                             fontSize: 15.0,
+                                            color: Colors.pink,
+                                            fontWeight: FontWeight.bold,
                                           )),
                                     ),
                                   ],
                                 ),
                               ),
+                              /*
                               Expanded(
                                 flex: 2,
                                 child: Column(
@@ -360,15 +357,71 @@ class _FmrScreenState extends State<FmrScreen> {
                                     )
                                   ],
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
+                          SizedBox(
+                            height: 4.0,
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 8.0, right: 8.0),
+                                child: Text(
+                                  doc[index]['reason'],
+                                  textAlign: TextAlign.left,
+                                ),
+                              ))
+                            ],
+                          ),
+                          /*
+                          SizedBox(
+                            height: 4.0,
+                          ),
+                          RaisedButton.icon(
+                            onPressed: () {
+                              print('History:' + doc[index]['no']);
+                            },
+                            icon: Icon(Icons.history),
+                            label: Text('History'),
+                          ),
+                          */
+                          /*
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                child: RaisedButton.icon(
+                                  onPressed: () {
+                                    print('History:' + doc[index]['no']);
+                                  },
+                                  icon: Icon(Icons.history),
+                                  label: Text('History'),
+                                ),
+                              ),
+                              Expanded(
+                                child: RaisedButton.icon(
+                                  onPressed: () {
+                                    print('Response:' + doc[index]['no']);
+                                  },
+                                  icon: Icon(Icons.done),
+                                  label: Text(doc[index]['response']),
+                                ),
+                              ),
+                            ],
+                          ),*/
                         ],
                       ),
-                      /*
                       trailing: Column(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(
@@ -377,10 +430,52 @@ class _FmrScreenState extends State<FmrScreen> {
                                 color: Colors.pink,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15.0),
-                          )
+                          ),
+                          /*
+                          Expanded(
+                            child: Container(
+                              child: Ink(
+                                decoration: ShapeDecoration(
+                                  color: Colors.pink[200],
+                                  shape: CircleBorder(),
+                                ),
+                                child: IconButton(
+                                  icon: Icon(Icons.list),
+                                  color: Colors.pink,
+                                  onPressed: () {
+                                    print("filled background");
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                          */
+                          /*
+                          GestureDetector(
+                              onTap: () {
+                                print('Detail:' + doc[index]['no']);
+                              },
+                              child: Icon(
+                                Icons.list,
+                                size: 30.0,
+                              )),*/
+                          /*
+                          Expanded(
+                            child: IconButton(
+                              color: Colors.pink,
+                              icon: Icon(
+                                Icons.keyboard_arrow_right,
+                                size: 30.0,
+                              ),
+                              tooltip: 'Detail',
+                              onPressed: () {
+                                print('Detail:' + doc[index]['no']);
+                              },
+                            ),
+                          ),*/
+                          //Text('Detail')
                         ],
                       ),
-                      */
                     ),
                   );
                   /*
