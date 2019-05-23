@@ -1,4 +1,5 @@
 import 'dart:io' show Platform, exit; //at the top
+import 'package:bsmart/screens/epr_screen.dart';
 import 'package:bsmart/screens/fmr_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,16 @@ import 'package:bsmart/screens/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
 import 'package:http/http.dart' as http;
+//import 'package:flutter/rendering.dart';
 
 void main() => runApp(MyApp());
+
+/*
+void main() {
+  debugPaintSizeEnabled = true;
+  runApp(MyApp());
+}
+*/
 
 class MyApp extends StatefulWidget {
   @override
@@ -82,6 +91,11 @@ class _MyAppState extends State<MyApp> {
     setState(() {});
   }
 
+  Future<Null> setServer(String server) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString('server', server);
+  }
+
   @override
   Widget build(BuildContext context) {
     String os = Platform.operatingSystem; //in your code
@@ -114,6 +128,7 @@ class _MyAppState extends State<MyApp> {
           }
           var userDocument = snapshot.data;
           //return new Text(userDocument["line1"]);
+          setServer(userDocument["server"]);
           bool chkClose = false;
           if (userDocument["status"] == '0') {
             chkClose = true;
@@ -214,7 +229,9 @@ class _MyAppState extends State<MyApp> {
                                   ))
                             : LoginScreen(textValue),
             routes: <String, WidgetBuilder>{
+              '/main': (BuildContext context) => MainScreen(),
               '/fmr': (BuildContext context) => FmrScreen(),
+              '/epr': (BuildContext context) => EprScreen(),
             },
           );
           /*

@@ -126,7 +126,9 @@ class _MainScreenState extends State<MainScreen> {
               style: TextStyle(fontSize: 15.0),
             ),
             trailing: Icon(Icons.keyboard_arrow_right),
-            onTap: () {}),
+            onTap: () {
+              Navigator.pushNamed(context, '/main');
+            }),
         Expanded(
           flex: 2,
           child: ListView.builder(
@@ -219,27 +221,8 @@ class _MainScreenState extends State<MainScreen> {
       ],
     ));
 
-    Widget bottomNavBar = BottomNavigationBar(
-        currentIndex: currentIndex,
-        onTap: (int index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.store),
-              title: Text(
-                'FMR',
-                style: TextStyle(fontSize: 15.0),
-              )),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.view_list),
-              title: Text('EPR', style: TextStyle(fontSize: 15.0))),
-        ]);
-
     return Scaffold(
-      appBar: appBar,
+      //appBar: appBar,
       /*body: RefreshIndicator(
         onRefresh: getModules,
         child: isLoading
@@ -284,11 +267,8 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
       ),*/
-      body: Center(
-        child: Text('This is Main Screen!'),
-      ),
+      body: pages[currentIndex],
       drawer: drawer,
-      bottomNavigationBar: bottomNavBar,
     );
   }
 }
