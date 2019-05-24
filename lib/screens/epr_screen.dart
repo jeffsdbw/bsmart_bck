@@ -19,8 +19,8 @@ class _EprScreenState extends State<EprScreen> {
     String server = (prefs.getString('server') ?? 'Unknow Server');
     userID = (prefs.getString('userID') ?? 'Unknow User');
     userName = (prefs.getString('userName') ?? 'Unknow Name');
-    print('Check Server:' + server + 'getModule.php?user=' + userID);
-    final response = await http.get(server + 'getModule.php?user=' + userID);
+    final response =
+        await http.get(server + 'getModule.php?appid=BSMART&user=' + userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);

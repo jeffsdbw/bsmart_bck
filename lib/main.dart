@@ -1,5 +1,6 @@
 import 'dart:io' show Platform, exit; //at the top
 import 'package:bsmart/screens/epr_screen.dart';
+import 'package:bsmart/screens/fmr_main_screen.dart';
 import 'package:bsmart/screens/fmr_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -230,7 +231,7 @@ class _MyAppState extends State<MyApp> {
                             : LoginScreen(textValue),
             routes: <String, WidgetBuilder>{
               '/main': (BuildContext context) => MainScreen(),
-              '/fmr': (BuildContext context) => FmrScreen(),
+              '/fmr': (BuildContext context) => FmrMainScreen(),
               '/epr': (BuildContext context) => EprScreen(),
             },
           );
