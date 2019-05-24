@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
 
 class EprScreen extends StatefulWidget {
   @override
@@ -61,11 +62,11 @@ class _EprScreenState extends State<EprScreen> {
       actions: <Widget>[
         IconButton(
             icon: Icon(
-              Icons.refresh,
+              Icons.exit_to_app,
               color: Colors.white,
             ),
             onPressed: () {
-              print('Refresh EPR');
+              exit(0);
             }),
       ],
     );
@@ -207,8 +208,29 @@ class _EprScreenState extends State<EprScreen> {
 
     return Scaffold(
       appBar: appBar,
-      body: Center(
-        child: Text('EPR system is coming soon!'),
+      body: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Image(
+                image: NetworkImage(
+                    'http://dsmservice.mistine.co.th/bsmart/image/kung.jpg'),
+                height: 200.0,
+              ),
+              SizedBox(
+                height: 8.0,
+              ),
+              Text(
+                'e-PR system is coming soon!',
+                style: TextStyle(color: Colors.red, fontSize: 20.0),
+              ),
+            ],
+          ),
+        ),
       ),
       drawer: drawer,
     );

@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:bsmart/screens/fmr_history_screen.dart';
+import 'package:bsmart/screens/fmr_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,6 +17,9 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
   bool isLoading = true, isLoading2 = true;
   String userID, userName;
 
+  int currentIndex = 0;
+  List pages = [FmrListScreen(), FmrHistoryScreen()];
+
   Future<Null> getModules() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String server = (prefs.getString('server') ?? 'Unknow Server');
@@ -22,7 +27,8 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
     userName = (prefs.getString('userName') ?? 'Unknow Name');
     print(
         'Check Server:' + server + 'getModule.php?appid=BSMART&user=' + userID);
-    final response = await http.get(server + 'getModule.php?user=' + userID);
+    final response =
+        await http.get(server + 'getModule.php?appid=BSMART&user=' + userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -38,34 +44,11 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
     }
   }
 
-  Future<Null> getDocList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String server = (prefs.getString('server') ?? 'Unknow Server');
-    userID = (prefs.getString('userID') ?? 'Unknow User');
-    //final response = await http.get(server + '/fmr/getDocList.php?user=' + userID);
-    final response =
-        await http.get(server + '/fmr/getDocList.php?user=NAPRAPAT');
-
-    if (response.statusCode == 200) {
-      var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
-      isLoading2 = false;
-      /*setState(() {
-        modules = jsonResponse['results'];
-      });*/
-      doc = jsonResponse['results'];
-      setState(() {});
-    } else {
-      print('Connection Error!');
-    }
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getModules();
-    getDocList();
   }
 
   @override
@@ -86,11 +69,11 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
       actions: <Widget>[
         IconButton(
             icon: Icon(
-              Icons.refresh,
+              Icons.exit_to_app,
               color: Colors.white,
             ),
             onPressed: () {
-              print('Refresh FMR');
+              exit(0);
             }),
       ],
     );
@@ -230,309 +213,31 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
       ],
     ));
 
+    Widget bottomNavBar = BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: (int index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              title: Text(
+                'List',
+                style: TextStyle(fontSize: 15.0),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              title: Text('History', style: TextStyle(fontSize: 15.0))),
+        ]);
+
     return Scaffold(
       //backgroundColor: Colors.white,
       appBar: appBar,
-      body: RefreshIndicator(
-        onRefresh: getDocList,
-        child: isLoading2
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                physics: const AlwaysScrollableScrollPhysics(),
-                itemBuilder: (context, int index) {
-                  double fontSize = 13.0;
-                  int chkLength = doc[index]['dept'].length;
-                  if (chkLength == 2) {
-                    fontSize = 20.0;
-                  } else if (chkLength == 3) {
-                    fontSize = 15.0;
-                  } else if (chkLength == 4) {
-                    fontSize = 14.0;
-                  }
-
-                  return Card(
-                    elevation: 8.0,
-                    margin: EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
-                    child: ListTile(
-                      leading: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.pink,
-                              radius: 20.0,
-                              child: Text(
-                                doc[index]['dept'],
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: fontSize,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      title: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                //flex: 3,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      doc[index]['no'],
-                                      style: TextStyle(
-                                        fontSize: 15.0,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4.0,
-                                    ),
-                                    Text('Charge : ' + doc[index]['charge'],
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                        )),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                //flex: 3,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      doc[index]['date'],
-                                      style: TextStyle(
-                                        fontSize: 15.0,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4.0,
-                                    ),
-                                    Container(
-                                      //color: Colors.purple,
-                                      width: 80.0,
-                                      alignment: Alignment(1.0, 0.0),
-                                      child: Text(doc[index]['amount'],
-                                          style: TextStyle(
-                                            fontSize: 15.0,
-                                            color: Colors.pink,
-                                            fontWeight: FontWeight.bold,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              /*
-                              Expanded(
-                                flex: 2,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      doc[index]['status'],
-                                      style: TextStyle(
-                                          color: Colors.pink,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 15.0),
-                                    )
-                                  ],
-                                ),
-                              ),*/
-                            ],
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 8.0, right: 8.0),
-                                child: Text(
-                                  doc[index]['reason'],
-                                  textAlign: TextAlign.left,
-                                ),
-                              ))
-                            ],
-                          ),
-                          /*
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          RaisedButton.icon(
-                            onPressed: () {
-                              print('History:' + doc[index]['no']);
-                            },
-                            icon: Icon(Icons.history),
-                            label: Text('History'),
-                          ),
-                          */
-                          /*
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                child: RaisedButton.icon(
-                                  onPressed: () {
-                                    print('History:' + doc[index]['no']);
-                                  },
-                                  icon: Icon(Icons.history),
-                                  label: Text('History'),
-                                ),
-                              ),
-                              Expanded(
-                                child: RaisedButton.icon(
-                                  onPressed: () {
-                                    print('Response:' + doc[index]['no']);
-                                  },
-                                  icon: Icon(Icons.done),
-                                  label: Text(doc[index]['response']),
-                                ),
-                              ),
-                            ],
-                          ),*/
-                        ],
-                      ),
-                      trailing: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            doc[index]['status'],
-                            style: TextStyle(
-                                color: Colors.pink,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15.0),
-                          ),
-                          /*
-                          Expanded(
-                            child: Container(
-                              child: Ink(
-                                decoration: ShapeDecoration(
-                                  color: Colors.pink[200],
-                                  shape: CircleBorder(),
-                                ),
-                                child: IconButton(
-                                  icon: Icon(Icons.list),
-                                  color: Colors.pink,
-                                  onPressed: () {
-                                    print("filled background");
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-                          */
-                          /*
-                          GestureDetector(
-                              onTap: () {
-                                print('Detail:' + doc[index]['no']);
-                              },
-                              child: Icon(
-                                Icons.list,
-                                size: 30.0,
-                              )),*/
-                          /*
-                          Expanded(
-                            child: IconButton(
-                              color: Colors.pink,
-                              icon: Icon(
-                                Icons.keyboard_arrow_right,
-                                size: 30.0,
-                              ),
-                              tooltip: 'Detail',
-                              onPressed: () {
-                                print('Detail:' + doc[index]['no']);
-                              },
-                            ),
-                          ),*/
-                          //Text('Detail')
-                        ],
-                      ),
-                    ),
-                  );
-                  /*
-                  return Card(
-                    margin: EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 2.0, bottom: 2.0),
-                    elevation: 8.0,
-//                    shape: RoundedRectangleBorder(
-//                        side: BorderSide.none,
-//                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Container(
-                          color: Colors.pink,
-                          child: Row(
-                            children: <Widget>[
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    doc[index]['dept'],
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15.0),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                  child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text(
-                                  doc[index]['status'],
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15.0),
-                                ),
-                              )),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );*/
-                },
-                itemCount: doc != null ? doc.length : 0,
-              ),
-      ),
-      //body: Center(
-      //  child: Text('This is FMR Screen!'),
-      //),
+      body: pages[currentIndex],
       drawer: drawer,
+      bottomNavigationBar: bottomNavBar,
     );
   }
 }
