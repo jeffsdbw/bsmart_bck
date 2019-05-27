@@ -1,14 +1,12 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'epr_screen.dart';
 import 'fmr_main_screen.dart';
-import 'fmr_screen.dart';
 
 class MainScreen extends StatefulWidget {
   @override

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:bsmart/screens/fmr_info_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -160,24 +161,31 @@ class _FmrListScreenState extends State<FmrListScreen> {
                           ),
                         ],
                       ),
-                      trailing: Container(
-                        width: 35.0,
-                        height: 35.0,
-                        child: RaisedButton(
-                          elevation: 6.0,
-                          color: Colors.green[300],
-                          padding: EdgeInsets.all(0.0),
-                          shape: CircleBorder(),
-                          child: Center(
-                            child: Icon(
-                              Icons.edit,
-                              size: 20,
-                              color: Colors.black38,
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: Container(
+                          width: 35.0,
+                          height: 35.0,
+                          child: RaisedButton(
+                            elevation: 6.0,
+                            color: Colors.green[300],
+                            padding: EdgeInsets.all(0.0),
+                            shape: CircleBorder(),
+                            child: Center(
+                              child: Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: Colors.black38,
+                              ),
                             ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          FmrInfoScreen(doc[index]['no'])));
+                            },
                           ),
-                          onPressed: () {
-                            print('Button Clicked!');
-                          },
                         ),
                       ),
                       /*trailing: InkWell(
