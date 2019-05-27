@@ -11,7 +11,7 @@ class FmrDetailScreen extends StatefulWidget {
 }
 
 class _FmrDetailScreenState extends State<FmrDetailScreen> {
-  var doc;
+  var doc, docDtl;
   bool isLoading = true, isLoading2 = true;
   String dspDocNo,
       dspDocDate,
@@ -52,7 +52,9 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspReason = doc['header']['reason'];
       dspStatus = doc['header']['status'];
       dspResponse = doc['header']['response'];
-      //print('Doc No. : ' + dspDocNo);
+      docDtl = doc['detail'];
+      print('doc : ' + doc.toString());
+      print('docDtl : ' + docDtl.toString());
       setState(() {});
     } else {
       print('Connection Error!');
@@ -294,7 +296,41 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
               ),
             ),
           ),
-          Expanded(child: null),
+          new Expanded(
+            child: RefreshIndicator(
+              onRefresh: getDocDetail,
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : Card(
+                      child: ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemBuilder: (context, int index) {
+                          return Column(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 4.0,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                        child: Text(docDtl[index]['fscode'])),
+                                    //Expanded(child: Text(doc[index]['fsname'])),
+                                    //Expanded(child: Text(doc[index]['unit'])),
+                                    //Expanded(
+                                    //    child: Text(doc[index]['receive'])),
+                                  ],
+                                ),
+                              ),
+                              Divider(),
+                            ],
+                          );
+                        },
+                        itemCount: docDtl != null ? docDtl.length : 0,
+                      ),
+                    ),
+            ),
+          ),
         ],
       ),
     );
