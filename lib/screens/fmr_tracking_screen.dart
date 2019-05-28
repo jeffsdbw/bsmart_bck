@@ -97,8 +97,8 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
             n.status.toUpperCase(),
             softWrap: true,
           ),
-          subtitle: Text(n.updateby),
-          //content: Text(n.date),
+          subtitle: Text(n.updateby + '  ' + n.date + ''),
+          content: Text(' '),
           //content: Text(n.updateby + ' (' + n.date + ')'),
           isActive: true, // this is the issue
           state: StepState.indexed,
@@ -359,7 +359,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                   ),
                 ),
                 new Expanded(
-                  child: Container(
+                  child: Card(
                     margin: EdgeInsets.only(
                         left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
                     color: Colors.white,
