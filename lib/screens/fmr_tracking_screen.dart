@@ -88,12 +88,18 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
 
       //int cnt = 0;
 
+      current_step = list.length - 1;
+
       for (var n in list) {
         print('Hello ${n.status}');
         steps.add(Step(
-          title: Text(n.status),
+          title: Text(
+            n.status.toUpperCase(),
+            softWrap: true,
+          ),
           content: Text(n.updateby + ' (' + n.date + ')'),
           isActive: true, // this is the issue
+          state: StepState.indexed,
         ));
         //cnt = cnt + 1;
       }
@@ -307,7 +313,11 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                 ),
                 new Expanded(
                   child: Container(
+                    margin: EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
+                    color: Colors.white,
                     child: Stepper(
+                      controlsBuilder: ,
                       currentStep: this.current_step,
                       steps: steps,
                       type: StepperType.vertical,
@@ -316,7 +326,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                           current_step = step;
                         });
                       },
-                      onStepContinue: () {
+                      /*onStepContinue: () {
                         setState(() {
                           if (current_step < steps.length - 1) {
                             current_step = current_step + 1;
@@ -333,7 +343,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                             current_step = 0;
                           }
                         });
-                      },
+                      },*/
                     ),
                   ),
                 ),
