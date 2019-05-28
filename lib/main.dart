@@ -1,7 +1,6 @@
 import 'dart:io' show Platform, exit; //at the top
 import 'package:bsmart/screens/epr_screen.dart';
 import 'package:bsmart/screens/fmr_main_screen.dart';
-import 'package:bsmart/screens/fmr_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

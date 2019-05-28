@@ -97,7 +97,9 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
             n.status.toUpperCase(),
             softWrap: true,
           ),
-          content: Text(n.updateby + ' (' + n.date + ')'),
+          subtitle: Text(n.updateby),
+          //content: Text(n.date),
+          //content: Text(n.updateby + ' (' + n.date + ')'),
           isActive: true, // this is the issue
           state: StepState.indexed,
         ));
@@ -221,53 +223,98 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Expanded(
-                                  child: Text(
-                                    dspStatus,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      color: Colors.pink,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20.0,
-                                    ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 2.0, right: 2.0),
+                                    child: chkApv
+                                        ? RaisedButton(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.done,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  width: 4.0,
+                                                ),
+                                                Text(
+                                                  'Approve',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            color: Colors.green,
+                                            elevation: 4.0,
+                                            splashColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide.none,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            onPressed: () {
+                                              print('Approve Detail!!!');
+                                            },
+                                          )
+                                        : Text(
+                                            dspStatus,
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              color: Colors.pink,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20.0,
+                                            ),
+                                          ),
                                   ),
                                 ),
                                 Expanded(
-                                  child: chkApv
-                                      ? RaisedButton(
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: <Widget>[
-                                              Icon(
-                                                Icons.done,
-                                                color: Colors.white,
-                                              ),
-                                              SizedBox(
-                                                width: 8.0,
-                                              ),
-                                              Text(
-                                                'Approve',
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 15.0,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          color: Colors.green,
-                                          elevation: 4.0,
-                                          splashColor: Colors.white,
-                                          shape: RoundedRectangleBorder(
-                                              side: BorderSide.none,
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0)),
-                                          onPressed: () {
-                                            print('Approve Detail!!!');
-                                          },
-                                        )
-                                      : Text(' '),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 2.0, right: 2.0),
+                                    child: chkApv
+                                        ? RaisedButton(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: <Widget>[
+                                                Icon(
+                                                  Icons.cancel,
+                                                  color: Colors.white,
+                                                ),
+                                                SizedBox(
+                                                  width: 4.0,
+                                                ),
+                                                Text(
+                                                  'Cancel',
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 15.0,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                            color: Colors.red,
+                                            elevation: 4.0,
+                                            splashColor: Colors.white,
+                                            shape: RoundedRectangleBorder(
+                                                side: BorderSide.none,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            onPressed: () {
+                                              print('Approve Detail!!!');
+                                            },
+                                          )
+                                        : Text(' '),
+                                  ),
                                 ),
                               ],
                             ),
@@ -317,7 +364,18 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                         left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
                     color: Colors.white,
                     child: Stepper(
-                      controlsBuilder: ,
+                      controlsBuilder: (BuildContext context,
+                          {VoidCallback onStepContinue,
+                          VoidCallback onStepCancel}) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[],
+                          ),
+                        );
+                      },
                       currentStep: this.current_step,
                       steps: steps,
                       type: StepperType.vertical,
