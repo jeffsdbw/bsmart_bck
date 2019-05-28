@@ -11,18 +11,42 @@ class FmrTrackingScreen extends StatefulWidget {
 }
 
 class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
-  var doc, docDtl, dtl;
-  Map data, myMap;
+  var doc, docDtl, dtl, rest;
+  List<Detail> list;
   bool isLoading = true, isLoading2 = true;
-  String dspDocNo,
-      dspDocDate,
-      dspDept,
-      dspCharge,
-      dspWh,
-      dspUnit,
-      dspReason,
-      dspStatus,
-      dspResponse;
+  String dspDocNo = 'xxx',
+      dspDocDate = 'xxx',
+      dspDept = 'xxx',
+      dspCharge = 'xxx',
+      dspWh = 'xxx',
+      dspUnit = 'xxx',
+      dspReason = 'xxx',
+      dspStatus = 'xxx',
+      dspResponse = 'xxx';
+
+  // Step Counter
+  int current_step = 0;
+
+  //List<Step> steps;
+
+  List<Step> steps = [
+    /*  Step(
+      title: Text('Step 1'),
+      content: Text('Hello!'),
+      isActive: true,
+    ),
+    Step(
+      title: Text('Step 2'),
+      content: Text('World!'),
+      isActive: true,
+    ),
+    Step(
+      title: Text('Step 3'),
+      content: Text('Hello World!'),
+      state: StepState.complete,
+      isActive: true,
+    ), */
+  ];
 
   Future<Null> getDocTracking() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -57,15 +81,23 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       print('doc : ' + doc.toString());
       print('docDtl : ' + docDtl.toString());
 
-      /*
-      data = json.decode(response.body);
-      dtl = data['detail']; //returns a List of Maps
-      for (var items in dtl) {
-        //iterate over the list
-        myMap = items; //store each map
-        print('myMap:' + myMap['status']);
+      rest = docDtl as List;
+      list = rest.map<Detail>((json) => Detail.fromJson(json)).toList();
+
+      print("List Size: ${list.length}");
+
+      //int cnt = 0;
+
+      for (var n in list) {
+        print('Hello ${n.status}');
+        steps.add(Step(
+          title: Text(n.status),
+          content: Text(n.updateby + ' (' + n.date + ')'),
+          isActive: true, // this is the issue
+        ));
+        //cnt = cnt + 1;
       }
-      */
+
       setState(() {});
     } else {
       print('Connection Error!');
@@ -106,219 +138,207 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
         dspStatus == 'Cancel') {
       chkApv = false;
     }
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-          child: Container(
-            color: Colors.white,
-            child: ListTile(
-              leading: Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: CircleAvatar(
-                      backgroundColor: Colors.pink,
-                      radius: 20.0,
-                      child: Text(
-                        dspDept,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: fontSize,
-                            color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              title: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                          child: Text(
-                        dspDocNo,
-                        textAlign: TextAlign.left,
-                      )),
-                      Expanded(
-                        child: Text(dspDocDate, textAlign: TextAlign.left),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text('Charge to : ' + dspCharge,
-                              textAlign: TextAlign.left),
-                        ),
-                        Expanded(
-                          //child: Text('Unit : ' + dspUnit, textAlign: TextAlign.left),
-                          child: Text(' ', textAlign: TextAlign.left),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4.0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: Text(
-                            dspStatus,
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              color: Colors.pink,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20.0,
+    return RefreshIndicator(
+      onRefresh: getDocTracking,
+      child: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: Container(
+                    color: Colors.white,
+                    child: ListTile(
+                      leading: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: CircleAvatar(
+                              backgroundColor: Colors.pink,
+                              radius: 20.0,
+                              child: Text(
+                                dspDept,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: fontSize,
+                                    color: Colors.white),
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: chkApv
-                              ? RaisedButton(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                      Icon(
-                                        Icons.done,
-                                        color: Colors.white,
-                                      ),
-                                      SizedBox(
-                                        width: 8.0,
-                                      ),
-                                      Text(
-                                        'Approve',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 15.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ],
-                                  ),
-                                  color: Colors.green,
-                                  elevation: 4.0,
-                                  splashColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      side: BorderSide.none,
-                                      borderRadius:
-                                          BorderRadius.circular(10.0)),
-                                  onPressed: () {
-                                    print('Approve Detail!!!');
-                                  },
-                                )
-                              : Text(' '),
-                        ),
-                      ],
-                    ),
-                  ),
-                  chkWh
-                      ? Padding(
-                          padding: EdgeInsets.only(top: 4.0),
-                          child: Row(
+                        ],
+                      ),
+                      title: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Row(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[Text(dspWh)],
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(
+                                dspDocNo,
+                                textAlign: TextAlign.left,
+                              )),
+                              Expanded(
+                                child:
+                                    Text(dspDocDate, textAlign: TextAlign.left),
+                              ),
+                            ],
                           ),
-                        )
-                      : SizedBox(
-                          width: 0.0,
-                        ),
-                  SizedBox(
-                    height: 4.0,
-                  ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text('Charge to : ' + dspCharge,
+                                      textAlign: TextAlign.left),
+                                ),
+                                Expanded(
+                                  //child: Text('Unit : ' + dspUnit, textAlign: TextAlign.left),
+                                  child: Text(' ', textAlign: TextAlign.left),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    dspStatus,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: Colors.pink,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: chkApv
+                                      ? RaisedButton(
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.done,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(
+                                                width: 8.0,
+                                              ),
+                                              Text(
+                                                'Approve',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 15.0,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          color: Colors.green,
+                                          elevation: 4.0,
+                                          splashColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              side: BorderSide.none,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0)),
+                                          onPressed: () {
+                                            print('Approve Detail!!!');
+                                          },
+                                        )
+                                      : Text(' '),
+                                ),
+                              ],
+                            ),
+                          ),
+                          chkWh
+                              ? Padding(
+                                  padding: EdgeInsets.only(top: 4.0),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: <Widget>[Text(dspWh)],
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: 0.0,
+                                ),
+                          SizedBox(
+                            height: 4.0,
+                          ),
 //                  Container(
 //                    child: Text(
 //                      dspReason,
 //                      textAlign: TextAlign.start,
 //                    ),
 //                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[Text(dspReason)],
-                  ),
-                  SizedBox(
-                    height: 4.0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-        new Expanded(
-          child: RefreshIndicator(
-            onRefresh: getDocTracking,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-              child: isLoading
-                  ? Center(child: CircularProgressIndicator())
-                  : Card(
-                      child: ListView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemBuilder: (context, int index) {
-                          return Text('555');
-                          /*
-                    return Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(
-                            top: 4.0,
-                          ),
-                          child: Row(
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                              Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    docDtl[index]['fscode'],
-                                    textAlign: TextAlign.center,
-                                  )),
-                              Expanded(
-                                  flex: 3,
-                                  child: Text(docDtl[index]['fsname'])),
-                              Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    docDtl[index]['unit'],
-                                    textAlign: TextAlign.center,
-                                  )),
-                              Expanded(
-                                  flex: 1,
-                                  child: Text(
-                                    docDtl[index]['receive'],
-                                    textAlign: TextAlign.center,
-                                  )),
+                              Expanded(child: Text(dspReason))
                             ],
                           ),
-                        ),
-                        Divider(),
-                      ],
-                    );*/
-                        },
-                        itemCount: docDtl != null ? docDtl.length : 0,
+                          SizedBox(
+                            height: 4.0,
+                          ),
+                        ],
                       ),
                     ),
+                  ),
+                ),
+                new Expanded(
+                  child: Container(
+                    child: Stepper(
+                      currentStep: this.current_step,
+                      steps: steps,
+                      type: StepperType.vertical,
+                      onStepTapped: (step) {
+                        setState(() {
+                          current_step = step;
+                        });
+                      },
+                      onStepContinue: () {
+                        setState(() {
+                          if (current_step < steps.length - 1) {
+                            current_step = current_step + 1;
+                          } else {
+                            current_step = 0;
+                          }
+                        });
+                      },
+                      onStepCancel: () {
+                        setState(() {
+                          if (current_step > 0) {
+                            current_step = current_step - 1;
+                          } else {
+                            current_step = 0;
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ),
-      ],
     );
 
     /*
@@ -341,5 +361,18 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       ],
     );
     */
+  }
+}
+
+class Detail {
+  String status;
+  String date;
+  String updateby;
+
+  Detail({this.status, this.date, this.updateby});
+
+  factory Detail.fromJson(Map<String, dynamic> json) {
+    return Detail(
+        status: json["status"], date: json["date"], updateby: json["updateby"]);
   }
 }
