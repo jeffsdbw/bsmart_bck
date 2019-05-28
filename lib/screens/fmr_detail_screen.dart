@@ -11,7 +11,7 @@ class FmrDetailScreen extends StatefulWidget {
 }
 
 class _FmrDetailScreenState extends State<FmrDetailScreen> {
-  var doc, docDtl;
+  var doc, docDtl, dtl;
   bool isLoading = true, isLoading2 = true;
   String dspDocNo,
       dspDocDate,
@@ -71,7 +71,14 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
   @override
   Widget build(BuildContext context) {
     double fontSize = 13.0;
-    int chkLength = dspDept.length;
+    int chkLength;
+    //int chkLength = dspDept.length;
+    if (dspDept.isEmpty || dspDept == '') {
+      chkLength = 2;
+    } else {
+      chkLength = dspDept.length;
+    }
+
     if (chkLength == 2) {
       fontSize = 20.0;
     } else if (chkLength == 3) {
@@ -79,18 +86,23 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     } else if (chkLength == 4) {
       fontSize = 14.0;
     }
-    bool chkWh = true;
+    bool chkWh = true, chkApv = true;
     if (dspWh.isEmpty || dspWh == "") {
       chkWh = false;
     }
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
+    if (dspStatus == 'Approve' ||
+        dspStatus == 'Receive' ||
+        dspStatus == 'Cancel') {
+      chkApv = false;
+    }
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          child: Container(
             color: Colors.white,
             child: ListTile(
               leading: Column(
@@ -142,8 +154,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                               textAlign: TextAlign.left),
                         ),
                         Expanded(
-                          child: Text('Unit : ' + dspUnit,
-                              textAlign: TextAlign.left),
+                          //child: Text('Unit : ' + dspUnit, textAlign: TextAlign.left),
+                          child: Text(' ', textAlign: TextAlign.left),
                         ),
                       ],
                     ),
@@ -166,37 +178,40 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                           ),
                         ),
                         Expanded(
-                          child: RaisedButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.done,
-                                  color: Colors.white,
-                                ),
-                                SizedBox(
-                                  width: 8.0,
-                                ),
-                                Text(
-                                  'Approve',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15.0,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                            color: Colors.green,
-                            elevation: 4.0,
-                            splashColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                side: BorderSide.none,
-                                borderRadius: BorderRadius.circular(10.0)),
-                            onPressed: () {
-                              print('Approve Detail!!!');
-                            },
-                          ),
+                          child: chkApv
+                              ? RaisedButton(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Icon(
+                                        Icons.done,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(
+                                        width: 8.0,
+                                      ),
+                                      Text(
+                                        'Approve',
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  color: Colors.green,
+                                  elevation: 4.0,
+                                  splashColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      side: BorderSide.none,
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                  onPressed: () {
+                                    print('Approve Detail!!!');
+                                  },
+                                )
+                              : Text(' '),
                         ),
                       ],
                     ),
@@ -217,11 +232,17 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                   SizedBox(
                     height: 4.0,
                   ),
-                  Container(
-                    child: Text(
-                      dspReason,
-                      textAlign: TextAlign.start,
-                    ),
+//                  Container(
+//                    child: Text(
+//                      dspReason,
+//                      textAlign: TextAlign.start,
+//                    ),
+//                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[Text(dspReason)],
                   ),
                   SizedBox(
                     height: 4.0,
@@ -230,18 +251,21 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
               ),
             ),
           ),
-          Container(
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+          child: Container(
             color: Colors.white,
             child: Padding(
               padding: const EdgeInsets.only(
-                  top: 4.0, left: 8.0, right: 8.0, bottom: 8.0),
+                  top: 4.0, bottom: 8.0, left: 4.0, right: 4.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                      flex: 1,
+                      flex: 2,
                       child: Container(
                         color: Colors.pink,
                         child: Padding(
@@ -254,7 +278,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                         ),
                       )),
                   Expanded(
-                      flex: 1,
+                      flex: 3,
                       child: Container(
                         color: Colors.pink,
                         child: Padding(
@@ -286,7 +310,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: Text(
-                            'Receive',
+                            'RCV',
                             style: TextStyle(color: Colors.white),
                             textAlign: TextAlign.center,
                           ),
@@ -296,9 +320,12 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
               ),
             ),
           ),
-          new Expanded(
-            child: RefreshIndicator(
-              onRefresh: getDocDetail,
+        ),
+        new Expanded(
+          child: RefreshIndicator(
+            onRefresh: getDocDetail,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4.0, right: 4.0),
               child: isLoading
                   ? Center(child: CircularProgressIndicator())
                   : Card(
@@ -314,11 +341,26 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                 child: Row(
                                   children: <Widget>[
                                     Expanded(
-                                        child: Text(docDtl[index]['fscode'])),
-                                    //Expanded(child: Text(doc[index]['fsname'])),
-                                    //Expanded(child: Text(doc[index]['unit'])),
-                                    //Expanded(
-                                    //    child: Text(doc[index]['receive'])),
+                                        flex: 2,
+                                        child: Text(
+                                          docDtl[index]['fscode'],
+                                          textAlign: TextAlign.center,
+                                        )),
+                                    Expanded(
+                                        flex: 3,
+                                        child: Text(docDtl[index]['fsname'])),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          docDtl[index]['unit'],
+                                          textAlign: TextAlign.center,
+                                        )),
+                                    Expanded(
+                                        flex: 1,
+                                        child: Text(
+                                          docDtl[index]['receive'],
+                                          textAlign: TextAlign.center,
+                                        )),
                                   ],
                                 ),
                               ),
@@ -331,8 +373,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                     ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
 
     /*
