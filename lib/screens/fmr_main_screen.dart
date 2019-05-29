@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:bsmart/main.dart';
 import 'package:bsmart/screens/fmr_history_screen.dart';
 import 'package:bsmart/screens/fmr_list_screen.dart';
+import 'package:bsmart/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,16 +17,24 @@ class FmrMainScreen extends StatefulWidget {
 class _FmrMainScreenState extends State<FmrMainScreen> {
   var modules, doc;
   bool isLoading = true, isLoading2 = true;
-  String userID, userName;
+  String userID, userName, token;
 
   int currentIndex = 0;
   List pages = [FmrListScreen(), FmrHistoryScreen()];
+
+  Future<Null> clearAllPref(String token) async {
+    Navigator.of(context).pop();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.clear();
+    exit(0);
+  }
 
   Future<Null> getModules() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String server = (prefs.getString('server') ?? 'Unknow Server');
     userID = (prefs.getString('userID') ?? 'Unknow User');
     userName = (prefs.getString('userName') ?? 'Unknow Name');
+    token = (prefs.getString('token') ?? 'Unknow Token');
     print(
         'Check Server:' + server + 'getModule.php?appid=BSMART&user=' + userID);
     final response =
@@ -151,6 +161,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
                         subtitle: Text(modules[position]['info'],
                             style: TextStyle(fontSize: 15.0)),
                         onTap: () {
+                          Navigator.of(context).pop();
                           Navigator.pushNamed(
                               context, modules[position]['path']);
                         },
@@ -203,7 +214,9 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
                           style: TextStyle(fontSize: 15.0),
                         ),
                         trailing: Icon(Icons.keyboard_arrow_right),
-                        onTap: () {},
+                        onTap: () {
+                          clearAllPref(token);
+                        },
                       ),
                     ],
                   );
