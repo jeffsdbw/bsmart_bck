@@ -22,7 +22,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
   int currentIndex = 0;
   List pages = [FmrListScreen(), FmrHistoryScreen()];
 
-  Future<Null> clearAllPref(String token) async {
+  Future<Null> clearAllPref() async {
     Navigator.of(context).pop();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     preferences.clear();
@@ -215,7 +215,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
                         ),
                         trailing: Icon(Icons.keyboard_arrow_right),
                         onTap: () {
-                          clearAllPref(token);
+                          clearAllPref();
                         },
                       ),
                     ],

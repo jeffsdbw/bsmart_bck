@@ -22,7 +22,8 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       dspUnit = 'xxx',
       dspReason = 'xxx',
       dspStatus = 'xxx',
-      dspResponse = 'xxx';
+      dspResponse = 'xxx',
+      dspApv = 'xxx';
 
   // Step Counter
   int current_step = 0;
@@ -77,6 +78,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       dspReason = doc['header']['reason'];
       dspStatus = doc['header']['status'];
       dspResponse = doc['header']['response'];
+      dspApv = doc['header']['apv'];
       docDtl = doc['detail'];
       print('doc : ' + doc.toString());
       print('docDtl : ' + docDtl.toString());
@@ -97,9 +99,25 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
             n.status.toUpperCase(),
             softWrap: true,
           ),
-          subtitle: Text(n.updateby + '  ' + n.date + ''),
-          content: Text(' '),
-          //content: Text(n.updateby + ' (' + n.date + ')'),
+          subtitle: Text(n.updateby + '  ' + n.date),
+          //content: Text(' '),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                n.username,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.pink,
+                    fontSize: 20.0),
+              ),
+              Text(
+                n.dept,
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
           isActive: true, // this is the issue
           state: StepState.indexed,
         ));
@@ -141,9 +159,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
     if (dspWh.isEmpty || dspWh == "") {
       chkWh = false;
     }
-    if (dspStatus == 'Approve' ||
-        dspStatus == 'Receive' ||
-        dspStatus == 'Cancel') {
+    if (dspApv == '0') {
       chkApv = false;
     }
     return RefreshIndicator(
@@ -436,11 +452,17 @@ class Detail {
   String status;
   String date;
   String updateby;
+  String username;
+  String dept;
 
-  Detail({this.status, this.date, this.updateby});
+  Detail({this.status, this.date, this.updateby, this.username, this.dept});
 
   factory Detail.fromJson(Map<String, dynamic> json) {
     return Detail(
-        status: json["status"], date: json["date"], updateby: json["updateby"]);
+        status: json["status"],
+        date: json["date"],
+        updateby: json["updateby"],
+        username: json["username"],
+        dept: json["dept"]);
   }
 }

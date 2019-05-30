@@ -21,7 +21,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspUnit = 'xxx',
       dspReason = 'xxx',
       dspStatus = 'xxx',
-      dspResponse = 'xxx';
+      dspResponse = 'xxx',
+      dspApv = 'xxx';
 
   Future<Null> getDocDetail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -52,6 +53,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspReason = doc['header']['reason'];
       dspStatus = doc['header']['status'];
       dspResponse = doc['header']['response'];
+      dspApv = doc['header']['apv'];
       docDtl = doc['detail'];
       print('doc : ' + doc.toString());
       print('docDtl : ' + docDtl.toString());
@@ -66,6 +68,56 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     // TODO: implement initState
     super.initState();
     getDocDetail();
+  }
+
+  Future<String> _asyncInputDialog(BuildContext context) async {
+    String reason = '';
+    return showDialog<String>(
+      context: context,
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter cancel reason'),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                  child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                    //labelText: 'Cancel Reason Detail',
+                    hintText: 'Fill your cancel reason here!'),
+                onChanged: (value) {
+                  reason = value;
+                },
+              ))
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                print('Cancel : ' + reason);
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: Colors.green),
+              ),
+              onPressed: () {
+                print('OK : ' + reason);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -90,9 +142,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     if (dspWh.isEmpty || dspWh == "") {
       chkWh = false;
     }
-    if (dspStatus == 'Approve' ||
-        dspStatus == 'Receive' ||
-        dspStatus == 'Cancel') {
+    if (dspApv == '0') {
       chkApv = false;
     }
     return RefreshIndicator(
@@ -259,7 +309,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                                     BorderRadius.circular(
                                                         10.0)),
                                             onPressed: () {
-                                              print('Approve Detail!!!');
+                                              _asyncInputDialog(context);
                                             },
                                           )
                                         : Text(' '),
@@ -358,19 +408,23 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                   ),
                                 ),
                               )),
-                          Expanded(
-                              flex: 1,
-                              child: Container(
-                                color: Colors.pink,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Text(
-                                    'RCV',
-                                    style: TextStyle(color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              )),
+                          chkApv
+                              ? SizedBox(
+                                  width: 0.0,
+                                )
+                              : Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    color: Colors.pink,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(
+                                        'RCV',
+                                        style: TextStyle(color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  )),
                         ],
                       ),
                     ),
@@ -406,12 +460,16 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                           docDtl[index]['unit'],
                                           textAlign: TextAlign.center,
                                         )),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          docDtl[index]['receive'],
-                                          textAlign: TextAlign.center,
-                                        )),
+                                    chkApv
+                                        ? SizedBox(
+                                            width: 0.0,
+                                          )
+                                        : Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              docDtl[index]['receive'],
+                                              textAlign: TextAlign.center,
+                                            )),
                                   ],
                                 ),
                               ),

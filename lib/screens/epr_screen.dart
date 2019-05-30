@@ -15,6 +15,13 @@ class _EprScreenState extends State<EprScreen> {
   bool isLoading = true;
   String userID, userName;
 
+  Future<Null> clearAllPref() async {
+    Navigator.of(context).pop();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    preferences.clear();
+    exit(0);
+  }
+
   Future<Null> getModules() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String server = (prefs.getString('server') ?? 'Unknow Server');
@@ -144,6 +151,7 @@ class _EprScreenState extends State<EprScreen> {
                         subtitle: Text(modules[position]['info'],
                             style: TextStyle(fontSize: 15.0)),
                         onTap: () {
+                          Navigator.of(context).pop();
                           Navigator.pushNamed(
                               context, modules[position]['path']);
                         },
@@ -196,7 +204,9 @@ class _EprScreenState extends State<EprScreen> {
                           style: TextStyle(fontSize: 15.0),
                         ),
                         trailing: Icon(Icons.keyboard_arrow_right),
-                        onTap: () {},
+                        onTap: () {
+                          clearAllPref();
+                        },
                       ),
                     ],
                   );
