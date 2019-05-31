@@ -1,3 +1,4 @@
+import 'package:bsmart/screens/fmr_tracking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +12,7 @@ class FmrDetailScreen extends StatefulWidget {
 }
 
 class _FmrDetailScreenState extends State<FmrDetailScreen> {
-  var doc, docDtl, dtl;
+  var doc, docDtl, dtl, updDtl;
   bool isLoading = true, isLoading2 = true;
   String dspDocNo = 'xxx',
       dspDocDate = 'xxx',
@@ -22,7 +23,73 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspReason = 'xxx',
       dspStatus = 'xxx',
       dspResponse = 'xxx',
-      dspApv = 'xxx';
+      dspApv = 'xxx',
+      dspRespCode = 'x';
+
+  Future<Null> updateDocStatus(String respCode, String reason) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String server = (prefs.getString('server') ?? 'Unknow Server');
+    String userID = (prefs.getString('userID') ?? 'Unknow userID');
+    String docNo = (prefs.getString('docNo') ?? 'Unknow DocNo.');
+    bool success = false;
+    String resStatus = '1',
+        resMsg = "Error!",
+        resTitle = "Error!",
+        resBody = "Hello, I am showDialog!";
+    final response = await http
+        //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
+        .post(server +
+            'fmr/updateDocStatus.php?docno=' +
+            docNo +
+            '&user=' +
+            userID +
+            '&prog=BSMARTAPP' +
+            '&status=' +
+            respCode +
+            '&reason=' +
+            reason); //userID);
+
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print('Update Doc Status:' + jsonResponse);
+      updDtl = jsonResponse['results'];
+      resStatus = updDtl['status'];
+      resMsg = updDtl['msg'];
+      if (resStatus == '0') {
+        success = true;
+        resTitle = 'Success!';
+      } else {
+        resMsg = 'Process Error!';
+      }
+      //print('updDtl : ' + updDtl.toString());
+
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(resTitle),
+            content: Text(resMsg),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  if (success) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FmrTrackingScreen()));
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print('Connection Error!');
+    }
+  }
 
   Future<Null> getDocDetail() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,6 +121,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspStatus = doc['header']['status'];
       dspResponse = doc['header']['response'];
       dspApv = doc['header']['apv'];
+      dspRespCode = doc['header']['responsecode'];
       docDtl = doc['detail'];
       print('doc : ' + doc.toString());
       print('docDtl : ' + docDtl.toString());
@@ -70,7 +138,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     getDocDetail();
   }
 
-  Future<String> _asyncInputDialog(BuildContext context) async {
+  Future<String> _asyncInputDialog(
+      BuildContext context, String respCode) async {
     String reason = '';
     return showDialog<String>(
       context: context,
@@ -100,7 +169,6 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () {
-                print('Cancel : ' + reason);
                 Navigator.of(context).pop();
               },
             ),
@@ -111,6 +179,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
               ),
               onPressed: () {
                 print('OK : ' + reason);
+                updateDocStatus(respCode, reason);
                 Navigator.of(context).pop();
               },
             ),
@@ -258,7 +327,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                                     BorderRadius.circular(
                                                         10.0)),
                                             onPressed: () {
-                                              print('Approve Detail!!!');
+                                              updateDocStatus(dspRespCode, '');
                                             },
                                           )
                                         : Text(
@@ -309,7 +378,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                                     BorderRadius.circular(
                                                         10.0)),
                                             onPressed: () {
-                                              _asyncInputDialog(context);
+                                              _asyncInputDialog(
+                                                  context, dspRespCode);
                                             },
                                           )
                                         : Text(' '),

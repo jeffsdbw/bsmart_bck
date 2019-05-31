@@ -110,7 +110,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.pink,
-                    fontSize: 20.0),
+                    fontSize: 17.0),
               ),
               Text(
                 n.dept,
