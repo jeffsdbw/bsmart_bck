@@ -26,23 +26,32 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspApv = 'xxx',
       dspRespCode = 'x';
 
-  Future<Null> updateDocStatus(String respCode, String reason) async {
+  Future<void> updateDocStatus(String respCode, String reason) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String server = (prefs.getString('server') ?? 'Unknow Server');
     String userID = (prefs.getString('userID') ?? 'Unknow userID');
     String docNo = (prefs.getString('docNo') ?? 'Unknow DocNo.');
     bool success = false;
-    String resStatus = '1',
+    String resStatus = "0",
         resMsg = "Error!",
         resTitle = "Error!",
         resBody = "Hello, I am showDialog!";
+    print('Servive:' +
+        server +
+        'fmr/updateDocStatus.php?docno=' +
+        docNo +
+        '&user=NAPRAPAT' +
+        '&prog=BSMARTAPP' +
+        '&status=' +
+        respCode +
+        '&reason=' +
+        reason);
     final response = await http
         //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .post(server +
             'fmr/updateDocStatus.php?docno=' +
             docNo +
-            '&user=' +
-            userID +
+            '&user=NAPRAPAT' +
             '&prog=BSMARTAPP' +
             '&status=' +
             respCode +
@@ -51,15 +60,24 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print('Update Doc Status:' + jsonResponse);
+      print('Update Doc Status:' + jsonResponse.toString());
       updDtl = jsonResponse['results'];
-      resStatus = updDtl['status'];
-      resMsg = updDtl['msg'];
-      if (resStatus == '0') {
+      resStatus = updDtl[0]['status'];
+      if (resStatus == "0") {
         success = true;
         resTitle = 'Success!';
+        if (updDtl[0]['msg'].isEmpty || updDtl[0]['msg'] == '') {
+          if (respCode == '9') {
+            resMsg = 'Cancel Success!';
+          } else {
+            resMsg = 'Approve Success!';
+          }
+        } else {
+          resMsg = updDtl[0]['msg'];
+        }
       } else {
         resMsg = 'Process Error!';
+        print('Update Error:' + updDtl[0]['msg']);
       }
       //print('updDtl : ' + updDtl.toString());
 
@@ -72,14 +90,14 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
             actions: <Widget>[
               FlatButton(
                 child: Text('OK'),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.of(context).pop();
-                  if (success) {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FmrTrackingScreen()));
-                  }
+//                  if (success) {
+//                    Navigator.pushReplacement(
+//                        context,
+//                        MaterialPageRoute(
+//                            builder: (context) => FmrTrackingScreen()));
+//                  }
                 },
               ),
             ],
@@ -179,8 +197,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
               ),
               onPressed: () {
                 print('OK : ' + reason);
-                updateDocStatus(respCode, reason);
                 Navigator.of(context).pop();
+                updateDocStatus(respCode, reason);
               },
             ),
           ],
@@ -378,8 +396,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                                                     BorderRadius.circular(
                                                         10.0)),
                                             onPressed: () {
-                                              _asyncInputDialog(
-                                                  context, dspRespCode);
+                                              _asyncInputDialog(context, '9');
                                             },
                                           )
                                         : Text(' '),
