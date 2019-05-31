@@ -92,6 +92,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                 child: Text('OK'),
                 onPressed: () async {
                   Navigator.of(context).pop();
+                  Navigator.of(context).pop();
 //                  if (success) {
 //                    Navigator.pushReplacement(
 //                        context,

@@ -11,7 +11,7 @@ class FmrTrackingScreen extends StatefulWidget {
 }
 
 class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
-  var doc, docDtl, dtl, rest;
+  var doc, docDtl, dtl, rest, updDtl;
   List<Detail> list;
   bool isLoading = true, isLoading2 = true;
   String dspDocNo = 'xxx',
@@ -23,7 +23,8 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       dspReason = 'xxx',
       dspStatus = 'xxx',
       dspResponse = 'xxx',
-      dspApv = 'xxx';
+      dspApv = 'xxx',
+      dspRespCode = 'x';
 
   // Step Counter
   int current_step = 0;
@@ -48,6 +49,90 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       isActive: true,
     ), */
   ];
+
+  Future<void> updateDocStatus(String respCode, String reason) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String server = (prefs.getString('server') ?? 'Unknow Server');
+    String userID = (prefs.getString('userID') ?? 'Unknow userID');
+    String docNo = (prefs.getString('docNo') ?? 'Unknow DocNo.');
+    bool success = false;
+    String resStatus = "0",
+        resMsg = "Error!",
+        resTitle = "Error!",
+        resBody = "Hello, I am showDialog!";
+    print('Servive:' +
+        server +
+        'fmr/updateDocStatus.php?docno=' +
+        docNo +
+        '&user=NAPRAPAT' +
+        '&prog=BSMARTAPP' +
+        '&status=' +
+        respCode +
+        '&reason=' +
+        reason);
+    final response = await http
+        //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
+        .post(server +
+            'fmr/updateDocStatus.php?docno=' +
+            docNo +
+            '&user=NAPRAPAT' +
+            '&prog=BSMARTAPP' +
+            '&status=' +
+            respCode +
+            '&reason=' +
+            reason); //userID);
+
+    if (response.statusCode == 200) {
+      var jsonResponse = json.decode(response.body);
+      print('Update Doc Status:' + jsonResponse.toString());
+      updDtl = jsonResponse['results'];
+      resStatus = updDtl[0]['status'];
+      if (resStatus == "0") {
+        success = true;
+        resTitle = 'Success!';
+        if (updDtl[0]['msg'].isEmpty || updDtl[0]['msg'] == '') {
+          if (respCode == '9') {
+            resMsg = 'Cancel Success!';
+          } else {
+            resMsg = 'Approve Success!';
+          }
+        } else {
+          resMsg = updDtl[0]['msg'];
+        }
+      } else {
+        resMsg = 'Process Error!';
+        print('Update Error:' + updDtl[0]['msg']);
+      }
+      //print('updDtl : ' + updDtl.toString());
+
+      return showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(resTitle),
+            content: Text(resMsg),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('OK'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+//                  if (success) {
+//                    Navigator.pushReplacement(
+//                        context,
+//                        MaterialPageRoute(
+//                            builder: (context) => FmrTrackingScreen()));
+//                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      print('Connection Error!');
+    }
+  }
 
   Future<Null> getDocTracking() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -78,6 +163,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       dspReason = doc['header']['reason'];
       dspStatus = doc['header']['status'];
       dspResponse = doc['header']['response'];
+      dspRespCode = doc['header']['responsecode'];
       dspApv = doc['header']['apv'];
       docDtl = doc['detail'];
       print('doc : ' + doc.toString());
@@ -135,6 +221,57 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
     // TODO: implement initState
     super.initState();
     getDocTracking();
+  }
+
+  Future<String> _asyncInputDialog(
+      BuildContext context, String respCode) async {
+    String reason = '';
+    return showDialog<String>(
+      context: context,
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Enter cancel reason'),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                  child: new TextField(
+                autofocus: true,
+                decoration: new InputDecoration(
+                    //labelText: 'Cancel Reason Detail',
+                    hintText: 'Fill your cancel reason here!'),
+                onChanged: (value) {
+                  reason = value;
+                },
+              ))
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: Colors.green),
+              ),
+              onPressed: () {
+                print('OK : ' + reason);
+                Navigator.of(context).pop();
+                updateDocStatus(respCode, reason);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -275,7 +412,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                                                     BorderRadius.circular(
                                                         10.0)),
                                             onPressed: () {
-                                              print('Approve Detail!!!');
+                                              updateDocStatus(dspRespCode, '');
                                             },
                                           )
                                         : Text(
@@ -326,7 +463,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                                                     BorderRadius.circular(
                                                         10.0)),
                                             onPressed: () {
-                                              print('Approve Detail!!!');
+                                              _asyncInputDialog(context, '9');
                                             },
                                           )
                                         : Text(' '),
