@@ -13,7 +13,7 @@ class FmrTrackingScreen extends StatefulWidget {
 class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
   var doc, docDtl, dtl, rest, updDtl;
   List<Detail> list;
-  bool isLoading = true, isLoading2 = true;
+  bool isLoading = true, isLoading2 = true, chkCancel = false;
   String dspDocNo = 'xxx',
       dspDocDate = 'xxx',
       dspDept = 'xxx',
@@ -24,7 +24,8 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       dspStatus = 'xxx',
       dspResponse = 'xxx',
       dspApv = 'xxx',
-      dspRespCode = 'x';
+      dspRespCode = 'x',
+      cancelReason = '';
 
   // Step Counter
   int current_step = 0;
@@ -116,7 +117,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                 child: Text('OK'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop('OK');
 //                  if (success) {
 //                    Navigator.pushReplacement(
 //                        context,
@@ -166,6 +167,12 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       dspRespCode = doc['header']['responsecode'];
       dspApv = doc['header']['apv'];
       docDtl = doc['detail'];
+      cancelReason = doc['header']['cancelreason'];
+      if(cancelReason.isEmpty||cancelReason==''){
+
+      } else {
+        chkCancel = true;
+      }
       print('doc : ' + doc.toString());
       print('docDtl : ' + docDtl.toString());
 
@@ -486,6 +493,18 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                               : SizedBox(
                                   width: 0.0,
                                 ),
+                          chkCancel?
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(child: Text('Cancel Reason : '+cancelReason))
+                            ],
+                          )
+                              :SizedBox(
+                            width: 0.0,
+                          ),
                           SizedBox(
                             height: 4.0,
                           ),

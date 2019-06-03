@@ -13,7 +13,7 @@ class FmrDetailScreen extends StatefulWidget {
 
 class _FmrDetailScreenState extends State<FmrDetailScreen> {
   var doc, docDtl, dtl, updDtl;
-  bool isLoading = true, isLoading2 = true;
+  bool isLoading = true, isLoading2 = true, chkCancel = false;
   String dspDocNo = 'xxx',
       dspDocDate = 'xxx',
       dspDept = 'xxx',
@@ -24,7 +24,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspStatus = 'xxx',
       dspResponse = 'xxx',
       dspApv = 'xxx',
-      dspRespCode = 'x';
+      dspRespCode = 'x',
+      cancelReason = '';
 
   Future<void> updateDocStatus(String respCode, String reason) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -92,7 +93,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                 child: Text('OK'),
                 onPressed: () async {
                   Navigator.of(context).pop();
-                  Navigator.of(context).pop();
+                  Navigator.of(context).pop('OK');
 //                  if (success) {
 //                    Navigator.pushReplacement(
 //                        context,
@@ -141,6 +142,12 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspResponse = doc['header']['response'];
       dspApv = doc['header']['apv'];
       dspRespCode = doc['header']['responsecode'];
+      cancelReason = doc['header']['cancelreason'];
+      if(cancelReason.isEmpty||cancelReason==''){
+
+      } else {
+        chkCancel = true;
+      }
       docDtl = doc['detail'];
       print('doc : ' + doc.toString());
       print('docDtl : ' + docDtl.toString());
@@ -420,6 +427,18 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                               : SizedBox(
                                   width: 0.0,
                                 ),
+                          chkCancel?
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(child: Text('Cancel Reason : '+cancelReason))
+                            ],
+                          )
+                          :SizedBox(
+                                width: 0.0,
+                          ),
                           SizedBox(
                             height: 4.0,
                           ),

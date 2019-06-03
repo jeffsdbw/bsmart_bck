@@ -178,12 +178,16 @@ class _FmrListScreenState extends State<FmrListScreen> {
                                 color: Colors.black38,
                               ),
                             ),
-                            onPressed: () {
-                              Navigator.push(
+                            onPressed: () async {
+                              var response = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           FmrInfoScreen(doc[index]['no'])));
+                              getDocList();
+                              setState(() {
+
+                              });
                             },
                           ),
                         ),

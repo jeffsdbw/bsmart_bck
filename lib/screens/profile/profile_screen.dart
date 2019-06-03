@@ -285,8 +285,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         Expanded(
           flex: 2,
-          child: Text(textTitle,
-            textAlign: TextAlign.left,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Text(textTitle,
+              textAlign: TextAlign.right,
+            ),
           ),
         ),
         Expanded(
