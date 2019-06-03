@@ -1,5 +1,5 @@
-import 'package:bsmart/screens/fmr_detail_screen.dart';
-import 'package:bsmart/screens/fmr_tracking_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_detail_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_tracking_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:bsmart/main.dart';
-import 'package:bsmart/screens/fmr_history_screen.dart';
-import 'package:bsmart/screens/fmr_list_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_history_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_list_screen.dart';
 import 'package:bsmart/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
