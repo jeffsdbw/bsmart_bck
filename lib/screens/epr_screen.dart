@@ -179,7 +179,11 @@ class _EprScreenState extends State<EprScreen> {
                           style: TextStyle(fontSize: 15.0),
                         ),
                         trailing: Icon(Icons.keyboard_arrow_right),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.pushNamed(
+                              context, '/profile');
+                        },
                       ),
                     ],
                   );
@@ -228,7 +232,7 @@ class _EprScreenState extends State<EprScreen> {
             children: <Widget>[
               Image(
                 image: NetworkImage(
-                    'http://dsmservice.mistine.co.th/bsmart/image/kung.jpg'),
+                    'http://dsmservice.mistine.co.th/bsmart/image/temp01.jpg'),
                 height: 200.0,
               ),
               SizedBox(

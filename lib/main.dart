@@ -2,6 +2,7 @@ import 'dart:io' show Platform, exit; //at the top
 import 'package:bsmart/screens/epr_screen.dart';
 import 'package:bsmart/screens/fmr_main_screen.dart';
 import 'package:bsmart/screens/fmr_tracking_screen.dart';
+import 'package:bsmart/screens/profile/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -234,6 +235,7 @@ class _MyAppState extends State<MyApp> {
               '/fmr': (BuildContext context) => FmrMainScreen(),
               '/epr': (BuildContext context) => EprScreen(),
               '/fmrtracking': (BuildContext context) => FmrTrackingScreen(),
+              '/profile': (BuildContext context) => ProfileScreen(),
             },
           );
           /*
