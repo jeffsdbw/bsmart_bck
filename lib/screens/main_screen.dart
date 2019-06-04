@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
+import 'package:bsmart/screens/initial_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info/package_info.dart';
@@ -19,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
   String userID, userName, versionName, versionCode;
 
   int currentIndex = 0;
-  List pages = [FmrMainScreen(), EprScreen()];
+  List pages = [InitialScreen(), FmrMainScreen(), EprScreen()];
 
   Future<Null> getInitScreen() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
