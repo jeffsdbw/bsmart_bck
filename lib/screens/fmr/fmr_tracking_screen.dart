@@ -13,7 +13,7 @@ class FmrTrackingScreen extends StatefulWidget {
 class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
   var doc, docDtl, dtl, rest, updDtl;
   List<Detail> list;
-  bool isLoading = true, isLoading2 = true, chkCancel = false;
+  bool isLoading = true, isLoading2 = true, chkCancel = false, chkImg = false;
   String dspDocNo = 'xxx',
       dspDocDate = 'xxx',
       dspDept = 'xxx',
@@ -61,22 +61,12 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
         resMsg = "Error!",
         resTitle = "Error!",
         resBody = "Hello, I am showDialog!";
-    print('Servive:' +
-        server +
-        'fmr/updateDocStatus.php?docno=' +
-        docNo +
-        '&user=NAPRAPAT' +
-        '&prog=BSMARTAPP' +
-        '&status=' +
-        respCode +
-        '&reason=' +
-        reason);
     final response = await http
         //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .post(server +
             'fmr/updateDocStatus.php?docno=' +
             docNo +
-            '&user=NAPRAPAT' +
+            '&user=' + userID +
             '&prog=BSMARTAPP' +
             '&status=' +
             respCode +
@@ -85,7 +75,6 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print('Update Doc Status:' + jsonResponse.toString());
       updDtl = jsonResponse['results'];
       resStatus = updDtl[0]['status'];
       if (resStatus == "0") {
@@ -102,9 +91,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
         }
       } else {
         resMsg = 'Process Error!';
-        print('Update Error:' + updDtl[0]['msg']);
       }
-      //print('updDtl : ' + updDtl.toString());
 
       return showDialog<void>(
         context: context,
@@ -131,7 +118,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
         },
       );
     } else {
-      print('Connection Error!');
+
     }
   }
 
@@ -145,11 +132,10 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
         .get(server +
             'fmr/getDocTracking.php?docno=' +
             docNo +
-            '&user=NAPRAPAT'); //userID);
+            '&user='+userID); //userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       isLoading = false;
       /*setState(() {
         modules = jsonResponse['results'];
@@ -173,20 +159,20 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
       } else {
         chkCancel = true;
       }
-      print('doc : ' + doc.toString());
-      print('docDtl : ' + docDtl.toString());
 
       rest = docDtl as List;
       list = rest.map<Detail>((json) => Detail.fromJson(json)).toList();
 
-      print("List Size: ${list.length}");
-
-      //int cnt = 0;
-
       current_step = list.length - 1;
 
       for (var n in list) {
-        print('Hello ${n.status}');
+
+        if(n.image.isEmpty||n.image==''){
+          chkImg = false;
+        } else {
+          chkImg = true;
+        }
+
         steps.add(Step(
           title: Text(
             n.status.toUpperCase(),
@@ -194,23 +180,60 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
           ),
           subtitle: Text(n.updateby + '  ' + n.date),
           //content: Text(' '),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          content:
+          chkImg
+          ?
+          Row(
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              Text(
-                n.username,
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.pink,
-                    fontSize: 17.0),
-              ),
-              Text(
-                n.dept,
-                textAlign: TextAlign.left,
-              ),
+              CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: NetworkImage(n.image,),
+                    radius: 30.0,
+                   ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      n.username,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink,
+                          fontSize: 17.0),
+                    ),
+                    Text(
+                      n.dept,
+                      textAlign: TextAlign.left,
+                    ),
+                  ],
+                ),
+              )
             ],
-          ),
+          )
+          :
+          Row(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    n.username,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.pink,
+                        fontSize: 17.0),
+                  ),
+                  Text(
+                    n.dept,
+                    textAlign: TextAlign.left,
+                  ),
+                ],
+              )
+            ]),
           isActive: true, // this is the issue
           state: StepState.indexed,
         ));
@@ -219,7 +242,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
 
       setState(() {});
     } else {
-      print('Connection Error!');
+
     }
   }
 
@@ -270,7 +293,6 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                 style: TextStyle(color: Colors.green),
               ),
               onPressed: () {
-                print('OK : ' + reason);
                 Navigator.of(context).pop();
                 updateDocStatus(respCode, reason);
               },
@@ -610,8 +632,10 @@ class Detail {
   String updateby;
   String username;
   String dept;
+  String image;
 
-  Detail({this.status, this.date, this.updateby, this.username, this.dept});
+
+  Detail({this.status, this.date, this.updateby, this.username, this.dept, this.image});
 
   factory Detail.fromJson(Map<String, dynamic> json) {
     return Detail(
@@ -619,6 +643,8 @@ class Detail {
         date: json["date"],
         updateby: json["updateby"],
         username: json["username"],
-        dept: json["dept"]);
+        dept: json["dept"],
+        image: json["image"]
+    );
   }
 }

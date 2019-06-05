@@ -37,22 +37,12 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
         resMsg = "Error!",
         resTitle = "Error!",
         resBody = "Hello, I am showDialog!";
-    print('Servive:' +
-        server +
-        'fmr/updateDocStatus.php?docno=' +
-        docNo +
-        '&user=NAPRAPAT' +
-        '&prog=BSMARTAPP' +
-        '&status=' +
-        respCode +
-        '&reason=' +
-        reason);
     final response = await http
         //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .post(server +
             'fmr/updateDocStatus.php?docno=' +
             docNo +
-            '&user=NAPRAPAT' +
+            '&user=' + userID +
             '&prog=BSMARTAPP' +
             '&status=' +
             respCode +
@@ -61,7 +51,6 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print('Update Doc Status:' + jsonResponse.toString());
       updDtl = jsonResponse['results'];
       resStatus = updDtl[0]['status'];
       if (resStatus == "0") {
@@ -78,9 +67,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
         }
       } else {
         resMsg = 'Process Error!';
-        print('Update Error:' + updDtl[0]['msg']);
       }
-      //print('updDtl : ' + updDtl.toString());
 
       return showDialog<void>(
         context: context,
@@ -107,7 +94,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
         },
       );
     } else {
-      print('Connection Error!');
+
     }
   }
 
@@ -121,11 +108,11 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
         .get(server +
             'fmr/getDocDetail.php?docno=' +
             docNo +
-            '&user=NAPRAPAT'); //userID);
+            '&user=' + userID
+            ); //userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       isLoading = false;
       /*setState(() {
         modules = jsonResponse['results'];
@@ -149,11 +136,8 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
         chkCancel = true;
       }
       docDtl = doc['detail'];
-      print('doc : ' + doc.toString());
-      print('docDtl : ' + docDtl.toString());
       setState(() {});
     } else {
-      print('Connection Error!');
     }
   }
 
@@ -204,7 +188,6 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
                 style: TextStyle(color: Colors.green),
               ),
               onPressed: () {
-                print('OK : ' + reason);
                 Navigator.of(context).pop();
                 updateDocStatus(respCode, reason);
               },

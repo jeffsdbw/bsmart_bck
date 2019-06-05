@@ -35,14 +35,11 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
     userID = (prefs.getString('userID') ?? 'Unknow User');
     userName = (prefs.getString('userName') ?? 'Unknow Name');
     token = (prefs.getString('token') ?? 'Unknow Token');
-    print(
-        'Check Server:' + server + 'getModule.php?appid=BSMART&user=' + userID);
     final response =
         await http.get(server + 'getModule.php?appid=BSMART&user=' + userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       isLoading = false;
       /*setState(() {
         modules = jsonResponse['results'];
@@ -50,7 +47,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
       modules = jsonResponse['results'];
       setState(() {});
     } else {
-      print('Connection Error!');
+
     }
   }
 

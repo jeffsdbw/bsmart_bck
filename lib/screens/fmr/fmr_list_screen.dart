@@ -21,11 +21,10 @@ class _FmrListScreenState extends State<FmrListScreen> {
     userID = (prefs.getString('userID') ?? 'Unknow User');
     //final response = await http.get(server + '/fmr/getDocList.php?user=' + userID);
     final response =
-        await http.get(server + '/fmr/getDocList.php?user=NAPRAPAT&page=l');
+        await http.get(server + '/fmr/getDocList.php?user='+userID+'&page=l');
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
-      print(jsonResponse);
       isLoading2 = false;
       /*setState(() {
         modules = jsonResponse['results'];
@@ -33,7 +32,7 @@ class _FmrListScreenState extends State<FmrListScreen> {
       doc = jsonResponse['results'];
       setState(() {});
     } else {
-      print('Connection Error!');
+
     }
   }
 
