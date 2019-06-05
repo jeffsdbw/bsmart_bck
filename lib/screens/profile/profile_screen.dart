@@ -256,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               _rowProfileData('Account', jsUserinfo['account']),
               _rowProfileData('Name', jsUserinfo['name']),
-              _rowProfileData('Short Name', jsUserinfo['short']),
+              //_rowProfileData('Short Name', jsUserinfo['short']),
               _rowProfileData('Department', jsUserinfo['dept']),
               _rowProfileData('Email', jsUserinfo['email']),
               _rowProfileData('Last Login', jsUserinfo['lastlogin']),
@@ -277,6 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _rowProfileData(String textTitle, String textData) {
     return new Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: <Widget>[
         new Icon(
           Icons.place,
@@ -289,6 +290,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.only(right: 8.0),
             child: Text(textTitle,
               textAlign: TextAlign.right,
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
         ),
@@ -296,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           flex: 4,
           child: Text(textData,
             textAlign: TextAlign.left,
-            style: TextStyle(color: Colors.pink),
+            style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold),
           ),
         ),
       ],
