@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bsmart/main.dart';
 import 'package:bsmart/screens/fmr/fmr_history_screen.dart';
 import 'package:bsmart/screens/fmr/fmr_list_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_normal_screen.dart';
 import 'package:bsmart/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -21,12 +22,15 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
 
   int currentIndex = 0;
   List pages = [FmrListScreen(), FmrHistoryScreen()];
+  //List pages = [FmrNormalScreen(), FmrListScreen(), FmrHistoryScreen()];
 
   Future<Null> clearAllPref() async {
     Navigator.of(context).pop();
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.clear();
-    exit(0);
+    await preferences.clear();
+    setState(() {
+      exit(0);
+    });
   }
 
   Future<Null> getModules() async {
@@ -76,11 +80,11 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
       actions: <Widget>[
         IconButton(
             icon: Icon(
-              Icons.exit_to_app,
+              Icons.add_circle,
               color: Colors.white,
             ),
             onPressed: () {
-              exit(0);
+              print('Add Button!');
             }),
       ],
     );
@@ -235,6 +239,12 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
           });
         },
         items: [
+          /*BottomNavigationBarItem(
+              icon: Icon(Icons.note_add),
+              title: Text(
+                'New',
+                style: TextStyle(fontSize: 15.0),
+              )),*/
           BottomNavigationBarItem(
               icon: Icon(Icons.list),
               title: Text(

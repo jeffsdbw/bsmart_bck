@@ -1,6 +1,7 @@
 import 'dart:io' show Platform, exit; //at the top
 import 'package:bsmart/screens/epr/epr_screen.dart';
 import 'package:bsmart/screens/fmr/fmr_main_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_normal_screen.dart';
 import 'package:bsmart/screens/fmr/fmr_tracking_screen.dart';
 import 'package:bsmart/screens/profile/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -161,6 +162,7 @@ class _MyAppState extends State<MyApp> {
               //cursorColor: Colors.white,
             ),
             title: 'BSMART ',
+            //home: FmrNormalScreen(),
             home: chkVersion
                 ? Center(
                     child: Scaffold(

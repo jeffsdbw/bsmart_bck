@@ -18,8 +18,10 @@ class _EprScreenState extends State<EprScreen> {
   Future<Null> clearAllPref() async {
     Navigator.of(context).pop();
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    preferences.clear();
-    exit(0);
+    await preferences.clear();
+    setState(() {
+      exit(0);
+    });
   }
 
   Future<Null> getModules() async {
