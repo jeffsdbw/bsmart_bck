@@ -126,7 +126,7 @@ Widget _buildInfo(BuildContext context, String status, String line1,
       Map<String, dynamic> map = jsonDecode(response.body);
       String status = map['results']['status'];
       if (status == '0') {
-        String userID = ctrUsername.text;
+        String userID   = map['results']['id'];
         String userName = map['results']['name'];
 
         final prefs = await SharedPreferences.getInstance();
