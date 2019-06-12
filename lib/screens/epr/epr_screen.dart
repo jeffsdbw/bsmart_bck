@@ -154,7 +154,7 @@ class _EprScreenState extends State<EprScreen> {
                             style: TextStyle(fontSize: 15.0)),
                         onTap: () {
                           Navigator.of(context).pop();
-                          Navigator.pushNamed(
+                          Navigator.pushReplacementNamed(
                               context, modules[position]['path']);
                         },
                       ),
@@ -183,7 +183,7 @@ class _EprScreenState extends State<EprScreen> {
                         trailing: Icon(Icons.keyboard_arrow_right),
                         onTap: () {
                           Navigator.of(context).pop();
-                          Navigator.pushNamed(
+                          Navigator.pushReplacementNamed(
                               context, '/profile');
                         },
                       ),

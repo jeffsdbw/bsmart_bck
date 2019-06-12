@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:async';
+import 'dart:math' as math;
 
 // ignore: must_be_immutable
 class FmrDetailScreen extends StatefulWidget {
@@ -25,7 +26,9 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspResponse = 'xxx',
       dspApv = 'xxx',
       dspRespCode = 'x',
-      cancelReason = '';
+      cancelReason = 'xxx',
+      dspEmail = 'xxx',
+      dspPhone = 'xxx';
 
   Future<void> updateDocStatus(String respCode, String reason) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,16 +41,17 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
         resTitle = "Error!",
         resBody = "Hello, I am showDialog!";
     final response = await http
-        //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
+    //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .post(server +
-            'fmr/updateDocStatus.php?docno=' +
-            docNo +
-            '&user=' + userID +
-            '&prog=BSMARTAPP' +
-            '&status=' +
-            respCode +
-            '&reason=' +
-            reason); //userID);
+        'fmr/updateDocStatus.php?docno=' +
+        docNo +
+        '&user=' +
+        userID +
+        '&prog=BSMARTAPP' +
+        '&status=' +
+        respCode +
+        '&reason=' +
+        reason); //userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -93,9 +97,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
           );
         },
       );
-    } else {
-
-    }
+    } else {}
   }
 
   Future<Null> getDocDetail() async {
@@ -104,12 +106,12 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     String userID = (prefs.getString('userID') ?? 'Unknow userID');
     String docNo = (prefs.getString('docNo') ?? 'Unknow DocNo.');
     final response = await http
-        //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
+    //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .get(server +
-            'fmr/getDocDetail.php?docno=' +
-            docNo +
-            '&user=' + userID
-            ); //userID);
+        'fmr/getDocDetail.php?docno=' +
+        docNo +
+        '&user=' +
+        userID); //userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -128,17 +130,17 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       dspStatus = doc['header']['status'];
       dspResponse = doc['header']['response'];
       dspApv = doc['header']['apv'];
+      dspEmail = doc['header']['email'];
+      dspPhone = doc['header']['phoneno'];
       dspRespCode = doc['header']['responsecode'];
       cancelReason = doc['header']['cancelreason'];
-      if(cancelReason.isEmpty||cancelReason==''){
-
+      if (cancelReason.isEmpty || cancelReason == '') {
       } else {
         chkCancel = true;
       }
       docDtl = doc['detail'];
       setState(() {});
-    } else {
-    }
+    } else {}
   }
 
   @override
@@ -154,7 +156,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     return showDialog<String>(
       context: context,
       barrierDismissible:
-          false, // dialog is dismissible with a tap on the barrier
+      false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Enter cancel reason'),
@@ -162,14 +164,14 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
             children: <Widget>[
               new Expanded(
                   child: new TextField(
-                autofocus: true,
-                decoration: new InputDecoration(
-                    //labelText: 'Cancel Reason Detail',
-                    hintText: 'Fill your cancel reason here!'),
-                onChanged: (value) {
-                  reason = value;
-                },
-              ))
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                      //labelText: 'Cancel Reason Detail',
+                        hintText: 'Fill your cancel reason here!'),
+                    onChanged: (value) {
+                      reason = value;
+                    },
+                  ))
             ],
           ),
           actions: <Widget>[
@@ -200,6 +202,7 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     double fontSize = 13.0;
     int chkLength;
     //int chkLength = dspDept.length;
@@ -223,357 +226,344 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
     if (dspApv == '0') {
       chkApv = false;
     }
+
+    Widget makeHeader = SliverPersistentHeader(
+      pinned: true,
+      delegate: _SliverAppBarDelegate(
+        minHeight: 30.0,
+        maxHeight: 30.0,
+        child: Container(
+          padding: EdgeInsets.only(left: 4.0, right: 4.0),
+          color: Colors.white,
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  flex: 2,
+                  child: Container(
+                    color: Colors.pink,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        'FS Code',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )),
+              Expanded(
+                  flex: 3,
+                  child: Container(
+                    color: Colors.pink,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        'FS Name',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )),
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.pink,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        'QTY',
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )),
+              chkApv
+                  ? SizedBox(
+                width: 0.0,
+              )
+                  : Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.pink,
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Text(
+                        'RCV',
+                        style:
+                        TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  )),
+            ],
+          ),
+        ),
+      ),
+    );
+
+
     return RefreshIndicator(
       onRefresh: getDocDetail,
-      child: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Container(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: Column(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : CustomScrollView(
+            slivers: <Widget>[
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(4.0),
+                      child: Row(
                         mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.pink,
-                              radius: 20.0,
-                              child: Text(
-                                dspDept,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: fontSize,
-                                    color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      title: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
+                          Expanded(
+                              flex: 2,
+                              child: Container(
+                                color: Colors.white,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.pink,
+                                  radius: 20.0,
                                   child: Text(
-                                dspDocNo,
-                                textAlign: TextAlign.left,
+                                    dspDept,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: fontSize,
+                                        color: Colors.white),
+                                  ),
+                                ),
                               )),
-                              Expanded(
-                                child:
-                                    Text(dspDocDate, textAlign: TextAlign.left),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text('Charge to : ' + dspCharge,
-                                      textAlign: TextAlign.left),
-                                ),
-                                Expanded(
-                                  //child: Text('Unit : ' + dspUnit, textAlign: TextAlign.left),
-                                  child: Text(' ', textAlign: TextAlign.left),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 2.0, right: 2.0),
-                                    child: chkApv
-                                        ? RaisedButton(
+                          Expanded(
+                              flex: 8,
+                              child: Container(
+                                color: Colors.white,
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      dspDocNo,
+                                      style: TextStyle(
+                                          color: Colors.pink,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child: Text(dspDocDate),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child:
+                                      Text('Charge to : ' + dspCharge),
+                                    ),
+                                    chkApv
+                                        ? Row(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        RaisedButton(
+                                          child: Padding(
+                                            padding:
+                                            const EdgeInsets.all(
+                                                4.0),
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
+                                              MainAxisAlignment
+                                                  .center,
+                                              mainAxisSize:
+                                              MainAxisSize.min,
                                               children: <Widget>[
                                                 Icon(
                                                   Icons.done,
                                                   color: Colors.white,
                                                 ),
-                                                SizedBox(
-                                                  width: 4.0,
-                                                ),
-                                                Text(
-                                                  'Approve',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
                                               ],
                                             ),
-                                            color: Colors.green,
-                                            elevation: 4.0,
-                                            splashColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide.none,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            onPressed: () {
-                                              updateDocStatus(dspRespCode, '');
-                                            },
-                                          )
-                                        : Text(
-                                            dspStatus,
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                              color: Colors.pink,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                            ),
                                           ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 2.0, right: 2.0),
-                                    child: chkApv
-                                        ? RaisedButton(
+                                          color: Colors.green,
+                                          elevation: 4.0,
+                                          splashColor: Colors.white,
+                                          shape:
+                                          RoundedRectangleBorder(
+                                              side:
+                                              BorderSide.none,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  10.0)),
+                                          onPressed: () {
+                                            updateDocStatus(
+                                                dspRespCode, '');
+                                          },
+                                        ),
+                                        SizedBox(
+                                          width: 24.0,
+                                          height: 4.0,
+                                        ),
+                                        RaisedButton(
+                                          child: Padding(
+                                            padding:
+                                            const EdgeInsets.all(
+                                                4.0),
                                             child: Row(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
+                                              MainAxisAlignment
+                                                  .center,
+                                              mainAxisSize:
+                                              MainAxisSize.min,
                                               children: <Widget>[
                                                 Icon(
                                                   Icons.cancel,
                                                   color: Colors.white,
                                                 ),
-                                                SizedBox(
-                                                  width: 4.0,
-                                                ),
-                                                Text(
-                                                  'Cancel',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
                                               ],
                                             ),
-                                            color: Colors.red,
-                                            elevation: 4.0,
-                                            splashColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide.none,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            onPressed: () {
-                                              _asyncInputDialog(context, '9');
-                                            },
-                                          )
-                                        : Text(' '),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          chkWh
-                              ? Padding(
-                                  padding: EdgeInsets.only(top: 4.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[Text(dspWh)],
-                                  ),
-                                )
-                              : SizedBox(
-                                  width: 0.0,
-                                ),
-                          chkCancel?
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(child: Text('Cancel Reason : '+cancelReason))
-                            ],
-                          )
-                          :SizedBox(
-                                width: 0.0,
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-//                  Container(
-//                    child: Text(
-//                      dspReason,
-//                      textAlign: TextAlign.start,
-//                    ),
-//                  ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(child: Text(dspReason))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Container(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 4.0, bottom: 8.0, left: 4.0, right: 4.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                              flex: 2,
-                              child: Container(
-                                color: Colors.pink,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Text(
-                                    'FS Code',
-                                    style: TextStyle(color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              )),
-                          Expanded(
-                              flex: 3,
-                              child: Container(
-                                color: Colors.pink,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Text(
-                                    'FS Name',
-                                    style: TextStyle(color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              )),
-                          Expanded(
-                              flex: 1,
-                              child: Container(
-                                color: Colors.pink,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Text(
-                                    'QTY',
-                                    style: TextStyle(color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              )),
-                          chkApv
-                              ? SizedBox(
-                                  width: 0.0,
-                                )
-                              : Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    color: Colors.pink,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(4.0),
+                                          ),
+                                          color: Colors.red,
+                                          elevation: 4.0,
+                                          splashColor: Colors.white,
+                                          shape:
+                                          RoundedRectangleBorder(
+                                              side:
+                                              BorderSide.none,
+                                              borderRadius:
+                                              BorderRadius
+                                                  .circular(
+                                                  10.0)),
+                                          onPressed: () {
+                                            _asyncInputDialog(
+                                                context, '9');
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                        : Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
                                       child: Text(
-                                        'RCV',
-                                        style: TextStyle(color: Colors.white),
-                                        textAlign: TextAlign.center,
+                                        dspStatus,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: Colors.pink,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  )),
+                                    chkCancel
+                                        ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 4.0, bottom: 4.0),
+                                        child: Text('Cancel Reason : ' +
+                                            cancelReason))
+                                        : SizedBox(
+                                      height: 0.0,
+                                    ),
+                                    /*Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child: Text(dspEmail),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child: Text('Ext. ' + dspPhone),
+                                    ),*/
+                                    chkWh
+                                        ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 4.0, bottom: 4.0),
+                                        child: Text(dspWh))
+                                        : SizedBox(
+                                      width: 0.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child: Text(dspReason),
+                                    ),
+                                  ],
+                                ),
+                              )),
                         ],
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                new Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 4.0, right: 4.0),
-                    child: Card(
-                      child: ListView.builder(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemBuilder: (context, int index) {
-                          return Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 4.0,
-                                ),
-                                child: Row(
-                                  children: <Widget>[
-                                    Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          docDtl[index]['fscode'],
-                                          textAlign: TextAlign.center,
-                                        )),
-                                    Expanded(
-                                        flex: 3,
-                                        child: Text(docDtl[index]['fsname'])),
-                                    Expanded(
-                                        flex: 1,
-                                        child: Text(
-                                          docDtl[index]['unit'],
-                                          textAlign: TextAlign.center,
-                                        )),
-                                    chkApv
-                                        ? SizedBox(
-                                            width: 0.0,
-                                          )
-                                        : Expanded(
-                                            flex: 1,
-                                            child: Text(
-                                              docDtl[index]['receive'],
-                                              textAlign: TextAlign.center,
-                                            )),
-                                  ],
-                                ),
-                              ),
-                              Divider(),
-                            ],
-                          );
-                        },
-                        itemCount: docDtl != null ? docDtl.length : 0,
-                      ),
+              ),
+              makeHeader,
+              // Yes, this could also be a SliverFixedExtentList. Writing
+              // this way just for an example of SliverList construction.
+
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return Container(
+                    padding: EdgeInsets.only(left: 4.0, right: 4.0,top: 4.0),
+                    color: Colors.white,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                                flex: 2,
+                                child: Text(
+                                  docDtl[index]['fscode'],
+                                  textAlign: TextAlign.center,
+                                )),
+                            Expanded(
+                                flex: 3,
+                                child: Text(
+                                  docDtl[index]['fsname'],
+                                )),
+                            Expanded(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 4.0),
+                                  child: Text(
+                                    docDtl[index]['unit'],
+                                    textAlign: TextAlign.right,
+                                  ),
+                                )),
+                            chkApv
+                                ? SizedBox(
+                              width: 0.0,
+                            )
+                                : Expanded(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 4.0),
+                                  child: Text(
+                                    docDtl[index]['receive'],
+                                    textAlign: TextAlign.right,
+                                  ),
+                                )),
+                          ],
+                        ),
+                        Divider(
+                          //height: 1.0,
+                        ),
+                      ],
                     ),
-                  ),
-                ),
-              ],
-            ),
+                  );
+                }, childCount: docDtl != null ? docDtl.length : 0,),
+              ),
+
+
+            ],
+          ),
+        ),
+      ),
     );
 
     /*
@@ -596,5 +586,39 @@ class _FmrDetailScreenState extends State<FmrDetailScreen> {
       ],
     );
     */
+  }
+}
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    @required this.minHeight,
+    @required this.maxHeight,
+    @required this.child,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final Widget child;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  double get maxExtent => math.max(maxHeight, minHeight);
+
+  @override
+  Widget build(
+      BuildContext context,
+      double shrinkOffset,
+      bool overlapsContent)
+  {
+    return new SizedBox.expand(child: child);
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        child != oldDelegate.child;
   }
 }

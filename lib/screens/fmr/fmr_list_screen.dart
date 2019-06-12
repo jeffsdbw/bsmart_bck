@@ -97,26 +97,15 @@ class _FmrListScreenState extends State<FmrListScreen> {
                         children: <Widget>[
                           Row(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Expanded(
-                                //flex: 3,
-                                child: Text(
-                                  doc[index]['no'],
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                  ),
+                              Text(
+                                doc[index]['no'],
+                                style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Colors.pink
                                 ),
-                              ),
-                              Expanded(
-                                //flex: 3,
-                                child: Text(
-                                  doc[index]['date'],
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                  ),
-                                ),
+                                textAlign: TextAlign.left,
                               ),
                             ],
                           ),
@@ -125,18 +114,15 @@ class _FmrListScreenState extends State<FmrListScreen> {
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Expanded(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 4.0, right: 8.0),
-                                child: Text(
-                                  'Charge to : ' + doc[index]['charge'],
-                                  textAlign: TextAlign.left,
+                              Text(
+                                doc[index]['date'],
+                                style: TextStyle(
+                                  fontSize: 15.0,
                                 ),
-                              ))
+                                textAlign: TextAlign.left,
+                              ),
                             ],
                           ),
                           SizedBox(
@@ -144,18 +130,27 @@ class _FmrListScreenState extends State<FmrListScreen> {
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Expanded(
-                                  child: Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 4.0, right: 8.0),
-                                child: Text(
-                                  doc[index]['reason'],
-                                  textAlign: TextAlign.left,
-                                ),
-                              ))
+                                  child: Text(
+                                    'Charge to : ' + doc[index]['charge'],
+                                    textAlign: TextAlign.left,
+                                  ))
+                            ],
+                          ),
+                          SizedBox(
+                            height: 4.0,
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                  child: Text(
+                                    doc[index]['reason'],
+                                    textAlign: TextAlign.left,
+                                  ))
                             ],
                           ),
                         ],

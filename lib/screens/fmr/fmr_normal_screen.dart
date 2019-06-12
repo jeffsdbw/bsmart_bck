@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
-import 'package:bsmart/screens/fmr/fmr_info_screen.dart';
+import 'package:bsmart/screens/fmr/fmr_normal_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -185,7 +185,7 @@ class _FmrNormalScreenState extends State<FmrNormalScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    FmrInfoScreen(doc[index]['no'])));
+                                    FmrNormalDetailScreen(doc[index]['no'])));
                         getDocNormal();
                         setState(() {
 

@@ -62,16 +62,16 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
         resTitle = "Error!",
         resBody = "Hello, I am showDialog!";
     final response = await http
-        //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
+    //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .post(server +
-            'fmr/updateDocStatus.php?docno=' +
-            docNo +
-            '&user=' + userID +
-            '&prog=BSMARTAPP' +
-            '&status=' +
-            respCode +
-            '&reason=' +
-            reason); //userID);
+        'fmr/updateDocStatus.php?docno=' +
+        docNo +
+        '&user=' + userID +
+        '&prog=BSMARTAPP' +
+        '&status=' +
+        respCode +
+        '&reason=' +
+        reason); //userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -128,11 +128,11 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
     String userID = (prefs.getString('userID') ?? 'Unknow userID');
     String docNo = (prefs.getString('docNo') ?? 'Unknow DocNo.');
     final response = await http
-        //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
+    //.get(server + 'fmr/getDocDetail.php?docno=1900000002&user=' + userID);
         .get(server +
-            'fmr/getDocTracking.php?docno=' +
-            docNo +
-            '&user='+userID); //userID);
+        'fmr/getDocTracking.php?docno=' +
+        docNo +
+        '&user='+userID); //userID);
 
     if (response.statusCode == 200) {
       var jsonResponse = json.decode(response.body);
@@ -178,62 +178,103 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
             n.status.toUpperCase(),
             softWrap: true,
           ),
-          subtitle: Text(n.updateby + '  ' + n.date),
+          //subtitle: Text(n.updateby + '  ' + n.date),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(n.updateby),
+              Text(n.date),
+            ],
+          ),
           //content: Text(' '),
           content:
-          chkImg
-          ?
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              CircleAvatar(
-                    backgroundColor: Colors.white,
-                    backgroundImage: NetworkImage(n.image,),
-                    radius: 30.0,
-                   ),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      n.username,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.pink,
-                          fontSize: 17.0),
-                    ),
-                    Text(
-                      n.dept,
-                      textAlign: TextAlign.left,
-                    ),
-                  ],
-                ),
-              )
-            ],
-          )
-          :
-          Row(
-            children: <Widget>[
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: chkImg
+              ?Row(
+               mainAxisAlignment: MainAxisAlignment.start,
+               children: <Widget>[
+                 Column(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: <Widget>[
+                      CircleAvatar(
+                        backgroundColor: Colors.white,
+                        backgroundImage: NetworkImage(n.image,),
+                        radius: 30.0,
+                      ),
+                      Text(n.username, style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold),),
+                      Text(n.dept),
+                   ],
+                 ),
+               ],
+               )
+              :Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    n.username,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pink,
-                        fontSize: 17.0),
-                  ),
-                  Text(
-                    n.dept,
-                    textAlign: TextAlign.left,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(n.username, style: TextStyle(color: Colors.pink, fontWeight: FontWeight.bold),),
+                      Text(n.dept),
+                    ],
                   ),
                 ],
-              )
-            ]),
+              ),
+            ),
+//          content:
+//          chkImg
+//              ?
+//          Row(
+//            mainAxisSize: MainAxisSize.max,
+//            children: <Widget>[
+//              CircleAvatar(
+//                backgroundColor: Colors.white,
+//                backgroundImage: NetworkImage(n.image,),
+//                radius: 30.0,
+//              ),
+//              Padding(
+//                padding: const EdgeInsets.only(left: 8.0),
+//                child: Column(
+//                  crossAxisAlignment: CrossAxisAlignment.start,
+//                  children: <Widget>[
+//                    Text(
+//                      n.username,
+//                      textAlign: TextAlign.left,
+//                      style: TextStyle(
+//                          fontWeight: FontWeight.bold,
+//                          color: Colors.pink,
+//                          fontSize: 17.0),
+//                    ),
+//                    Text(
+//                      n.dept,
+//                      textAlign: TextAlign.left,
+//                    ),
+//                  ],
+//                ),
+//              )
+//            ],
+//          )
+//              :
+//          Row(
+//              children: <Widget>[
+//                Column(
+//                  crossAxisAlignment: CrossAxisAlignment.start,
+//                  children: <Widget>[
+//                    Text(
+//                      n.username,
+//                      textAlign: TextAlign.left,
+//                      style: TextStyle(
+//                          fontWeight: FontWeight.bold,
+//                          color: Colors.pink,
+//                          fontSize: 17.0),
+//                    ),
+//                    Text(
+//                      n.dept,
+//                      textAlign: TextAlign.left,
+//                    ),
+//                  ],
+//                )
+//              ]),
           isActive: true, // this is the issue
           state: StepState.indexed,
         ));
@@ -259,7 +300,7 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
     return showDialog<String>(
       context: context,
       barrierDismissible:
-          false, // dialog is dismissible with a tap on the barrier
+      false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Enter cancel reason'),
@@ -267,14 +308,14 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
             children: <Widget>[
               new Expanded(
                   child: new TextField(
-                autofocus: true,
-                decoration: new InputDecoration(
-                    //labelText: 'Cancel Reason Detail',
-                    hintText: 'Fill your cancel reason here!'),
-                onChanged: (value) {
-                  reason = value;
-                },
-              ))
+                    autofocus: true,
+                    decoration: new InputDecoration(
+                      //labelText: 'Cancel Reason Detail',
+                        hintText: 'Fill your cancel reason here!'),
+                    onChanged: (value) {
+                      reason = value;
+                    },
+                  ))
             ],
           ),
           actions: <Widget>[
@@ -330,239 +371,205 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
     }
     return RefreshIndicator(
       onRefresh: getDocTracking,
-      child: isLoading
-          ? Center(child: CircularProgressIndicator())
-          : Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: Container(
-                    color: Colors.white,
-                    child: ListTile(
-                      leading: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.pink,
-                              radius: 20.0,
-                              child: Text(
-                                dspDept,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: fontSize,
-                                    color: Colors.white),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: SingleChildScrollView(
+          child: isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Column(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Container(
+                color: Colors.white,
+                padding: EdgeInsets.all(4.0),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                            flex: 2,
+                            child: Container(
+                              color: Colors.white,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.pink,
+                                radius: 20.0,
+                                child: Text(
+                                  dspDept,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: fontSize,
+                                      color: Colors.white),
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      title: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                  child: Text(
-                                dspDocNo,
-                                textAlign: TextAlign.left,
-                              )),
-                              Expanded(
-                                child:
-                                    Text(dspDocDate, textAlign: TextAlign.left),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Text('Charge to : ' + dspCharge,
-                                      textAlign: TextAlign.left),
-                                ),
-                                Expanded(
-                                  //child: Text('Unit : ' + dspUnit, textAlign: TextAlign.left),
-                                  child: Text(' ', textAlign: TextAlign.left),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 2.0, right: 2.0),
-                                    child: chkApv
-                                        ? RaisedButton(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Icon(
-                                                  Icons.done,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(
-                                                  width: 4.0,
-                                                ),
-                                                Text(
-                                                  'Approve',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                            color: Colors.green,
-                                            elevation: 4.0,
-                                            splashColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide.none,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            onPressed: () {
-                                              updateDocStatus(dspRespCode, '');
-                                            },
-                                          )
-                                        : Text(
-                                            dspStatus,
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                              color: Colors.pink,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20.0,
-                                            ),
-                                          ),
+                            )),
+                        Expanded(
+                            flex: 8,
+                            child: Container(
+                              color: Colors.white,
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    dspDocNo,
+                                    style: TextStyle(
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Padding(
+                                  Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 2.0, right: 2.0),
-                                    child: chkApv
-                                        ? RaisedButton(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Icon(
-                                                  Icons.cancel,
-                                                  color: Colors.white,
-                                                ),
-                                                SizedBox(
-                                                  width: 4.0,
-                                                ),
-                                                Text(
-                                                  'Cancel',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 15.0,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                            color: Colors.red,
-                                            elevation: 4.0,
-                                            splashColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                side: BorderSide.none,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            onPressed: () {
-                                              _asyncInputDialog(context, '9');
-                                            },
-                                          )
-                                        : Text(' '),
+                                        top: 4.0, bottom: 4.0),
+                                    child: Text(dspDocDate),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          chkWh
-                              ? Padding(
-                                  padding: EdgeInsets.only(top: 4.0),
-                                  child: Row(
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 4.0, bottom: 4.0),
+                                    child:
+                                    Text('Charge to : ' + dspCharge),
+                                  ),
+                                  chkApv
+                                      ? Row(
                                     mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.start,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: <Widget>[Text(dspWh)],
+                                    CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      RaisedButton(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.all(
+                                              4.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .center,
+                                            mainAxisSize:
+                                            MainAxisSize.min,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.done,
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        color: Colors.green,
+                                        elevation: 4.0,
+                                        splashColor: Colors.white,
+                                        shape:
+                                        RoundedRectangleBorder(
+                                            side:
+                                            BorderSide.none,
+                                            borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                10.0)),
+                                        onPressed: () {
+                                          updateDocStatus(
+                                              dspRespCode, '');
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width: 24.0,
+                                        height: 4.0,
+                                      ),
+                                      RaisedButton(
+                                        child: Padding(
+                                          padding:
+                                          const EdgeInsets.all(
+                                              4.0),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .center,
+                                            mainAxisSize:
+                                            MainAxisSize.min,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.cancel,
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        color: Colors.red,
+                                        elevation: 4.0,
+                                        splashColor: Colors.white,
+                                        shape:
+                                        RoundedRectangleBorder(
+                                            side:
+                                            BorderSide.none,
+                                            borderRadius:
+                                            BorderRadius
+                                                .circular(
+                                                10.0)),
+                                        onPressed: () {
+                                          _asyncInputDialog(
+                                              context, '9');
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                      : Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 4.0, bottom: 4.0),
+                                    child: Text(
+                                      dspStatus,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                        color: Colors.pink,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
                                   ),
-                                )
-                              : SizedBox(
-                                  width: 0.0,
-                                ),
-                          chkCancel?
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(child: Text('Cancel Reason : '+cancelReason))
-                            ],
-                          )
-                              :SizedBox(
-                            width: 0.0,
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-//                  Container(
-//                    child: Text(
-//                      dspReason,
-//                      textAlign: TextAlign.start,
-//                    ),
-//                  ),
-                          Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(child: Text(dspReason))
-                            ],
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                        ],
-                      ),
+                                  chkCancel
+                                      ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child: Text('Cancel Reason : ' +
+                                          cancelReason))
+                                      : SizedBox(
+                                    height: 0.0,
+                                  ),
+                                  /*Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 4.0, bottom: 4.0),
+                                          child: Text(dspEmail),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              top: 4.0, bottom: 4.0),
+                                          child: Text('Ext. ' + dspPhone),
+                                        ),*/
+                                  chkWh
+                                      ? Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 4.0, bottom: 4.0),
+                                      child: Text(dspWh))
+                                      : SizedBox(
+                                    width: 0.0,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 4.0, bottom: 4.0),
+                                    child: Text(dspReason),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ],
                     ),
-                  ),
-                ),
-                new Expanded(
-                  child: Card(
-                    margin: EdgeInsets.only(
-                        left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
-                    color: Colors.white,
-                    child: Stepper(
+                    Divider(),
+                    Stepper(
+                      physics: NeverScrollableScrollPhysics(),
                       controlsBuilder: (BuildContext context,
                           {VoidCallback onStepContinue,
-                          VoidCallback onStepCancel}) {
+                            VoidCallback onStepCancel}) {
                         return Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
+                          padding: const EdgeInsets.only(top: 0.0),
                           child: Row(
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -597,32 +604,41 @@ class _FmrTrackingScreenState extends State<FmrTrackingScreen> {
                         });
                       },*/
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-    );
-
-    /*
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(left: 8.0, right: 8.0),
-          color: Colors.white,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Expanded(child: null),
-              Expanded(child: null),
-              Expanded(child: null),
+              ),
+              /*Card(
+                    color: Colors.white,
+                    child: Stepper(
+                      controlsBuilder: (BuildContext context,
+                          {VoidCallback onStepContinue,
+                            VoidCallback onStepCancel}) {
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[],
+                          ),
+                        );
+                      },
+                      currentStep: this.current_step,
+                      steps: steps,
+                      type: StepperType.vertical,
+                      onStepTapped: (step) {
+                        setState(() {
+                          current_step = step;
+                        });
+                      },
+                    ),
+                  ),*/
             ],
           ),
         ),
-        Expanded(child: null),
-      ],
+      ),
     );
-    */
+
+
   }
 }
 

@@ -163,7 +163,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
                             style: TextStyle(fontSize: 15.0)),
                         onTap: () {
                           Navigator.of(context).pop();
-                          Navigator.pushNamed(
+                          Navigator.pushReplacementNamed(
                               context, modules[position]['path']);
                         },
                       ),
@@ -192,7 +192,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
                         trailing: Icon(Icons.keyboard_arrow_right),
                         onTap: () {
                           Navigator.of(context).pop();
-                          Navigator.pushNamed(
+                          Navigator.pushReplacementNamed(
                               context, '/profile');
                           },
                       ),
@@ -248,7 +248,7 @@ class _FmrMainScreenState extends State<FmrMainScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.list),
               title: Text(
-                'Wait Approve',
+                'Wait',
                 style: TextStyle(fontSize: 15.0),
               )),
           BottomNavigationBarItem(

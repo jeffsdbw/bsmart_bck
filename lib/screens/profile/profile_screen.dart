@@ -162,7 +162,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 style: TextStyle(fontSize: 15.0)),
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.pushNamed(
+                              Navigator.pushReplacementNamed(
                                   context, modules[position]['path']);
                             },
                           ),
@@ -191,7 +191,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             trailing: Icon(Icons.keyboard_arrow_right),
                             onTap: () {
                               Navigator.of(context).pop();
-                              Navigator.pushNamed(
+                              Navigator.pushReplacementNamed(
                                   context, '/profile');
                             },
                           ),
@@ -257,10 +257,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
               _rowProfileData('Account', jsUserinfo['account']),
               _rowProfileData('Name', jsUserinfo['name']),
               //_rowProfileData('Short Name', jsUserinfo['short']),
-              _rowProfileData('Department', jsUserinfo['dept']),
+              _rowProfileData('Dept.', jsUserinfo['dept']),
               _rowProfileData('Email', jsUserinfo['email']),
-              _rowProfileData('Last Login', jsUserinfo['lastlogin']),
-              _rowProfileData('Last Session', jsUserinfo['lastsession']),
+              _rowProfileData('Login', jsUserinfo['lastlogin']),
+              _rowProfileData('Session', jsUserinfo['lastsession']),
               new Padding(
                 padding: const EdgeInsets.only(top: 24.0, bottom: 24.0),
                 child: new Text(
